@@ -1,0 +1,36 @@
+.complain-container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #eee;
+  }
+  .complain-container h2 {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .complain-container label {
+    display: block;
+    margin: 10px 0 4px 0;
+    font-weight: 500;
+  }
+  .complain-container textarea {
+    width: 100%;
+    padding: 9px;
+    margin-bottom: 12px;
+    border: 1px solid #b0b0b0;
+    border-radius: 6px;
+    resize: vertical;
+  }
+  .complain-container button {
+    width: 100%;
+    padding: 10px;
+    background: #0c7a5b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
