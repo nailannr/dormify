@@ -20,6 +20,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.use('/api/auth',authRouter)
+app.use('/api/user',userRouter)
 
 
 const PORT = process.env.PORT || 5000;
