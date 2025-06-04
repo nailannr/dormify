@@ -10,6 +10,7 @@ import MakePayment from "./components/user/makePayment.jsx";
 import SeatCancellation from "./components/user/seatCancel.jsx";
 import Update from "./components/user/update.jsx";
 import AvailableSeats from "./components/user/AvailableSeat.jsx";
+import AdminLayout from "./layout/admin/AdminLayout.js";
 
 function App() {
   return (
@@ -27,6 +28,9 @@ function App() {
         <Route path="/user/update" element={<Update />} />
         <Route path="/user/AvailableSeat" element={<AvailableSeats />} />
       </Routes>
+      {/* <Router>
+        <AdminLayout/>
+      </Router> */}
     </Router>
   );
 }
