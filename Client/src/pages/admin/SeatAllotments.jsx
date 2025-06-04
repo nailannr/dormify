@@ -1,35 +1,11 @@
 import React, { useState } from 'react';
 import { Users, Search } from 'lucide-react';
 
-interface Seat {
-  id: string;
-  number: number;
-  status: 'occupied' | 'vacant';
-  student?: {
-    name: string;
-    department: string;
-    regNo: string;
-  };
-}
-
-interface Room {
-  id: string;
-  number: string;
-  seats: Seat[];
-}
-
-interface Block {
-  id: string;
-  name: string;
-  rooms: Room[];
-}
-
-const SeatAllotment: React.FC = () => {
-  const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
+const SeatAllotment = () => {
+  const [selectedBlock, setSelectedBlock] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Sample data for blocks, rooms, and seats
-  const blocks: Block[] = [
+  const blocks = [
     {
       id: 'A',
       name: 'Block A',
@@ -38,20 +14,50 @@ const SeatAllotment: React.FC = () => {
           id: 'A1',
           number: '301',
           seats: [
-            { id: 'A1-1', number: 1, status: 'occupied', student: { name: 'Kazi Nusrat Tasneem', department: 'CSE', regNo: '2020331066'} },
-            { id: 'A1-2', number: 2, status: 'occupied', student: { name: 'Afia Fairuz', department: 'BMB', regNo: '2020331066'} },
-            { id: 'A1-3', number: 3, status: 'occupied', student: { name: 'Sharaf Tasnim', department: 'ENG', regNo: '2020331045' } },
-            { id: 'A1-4', number: 4, status: 'occupied', student: { name: 'Asmaul Hosna', department: 'ANP', regNo: '2020331062' } }
+            {
+              id: 'A1-1',
+              number: 1,
+              status: 'occupied',
+              student: {
+                name: 'Kazi Nusrat Tasneem',
+                department: 'CSE',
+                regNo: '2020331066'
+              }
+            },
+            {
+              id: 'A1-2',
+              number: 2,
+              status: 'occupied',
+              student: {
+                name: 'Afia Fairuz',
+                department: 'BMB',
+                regNo: '2020331066'
+              }
+            },
+            {
+              id: 'A1-3',
+              number: 3,
+              status: 'occupied',
+              student: {
+                name: 'Sharaf Tasnim',
+                department: 'ENG',
+                regNo: '2020331045'
+              }
+            },
+            {
+              id: 'A1-4',
+              number: 4,
+              status: 'occupied',
+              student: {
+                name: 'Asmaul Hosna',
+                department: 'ANP',
+                regNo: '2020331062'
+              }
+            }
           ]
-        },
-        // Add more rooms with similar structure
+        }
       ]
     },
-    // Add more blocks with similar structure
-  ];
-
-  // Add sample data for other blocks (B, C, D) following the same structure
-  blocks.push(
     {
       id: 'B',
       name: 'Block B',
@@ -60,10 +66,28 @@ const SeatAllotment: React.FC = () => {
           id: 'B1',
           number: '312',
           seats: [
-            { id: 'B1-1', number: 1, status: 'occupied', student: { name: 'Nishamoni Sinha', department: 'ANP', regNo: '2020331028' } },
+            {
+              id: 'B1-1',
+              number: 1,
+              status: 'occupied',
+              student: {
+                name: 'Nishamoni Sinha',
+                department: 'ANP',
+                regNo: '2020331028'
+              }
+            },
             { id: 'B1-2', number: 2, status: 'vacant' },
             { id: 'B1-3', number: 3, status: 'vacant' },
-            { id: 'B1-4', number: 4, status: 'occupied', student: { name: 'Padma Talukdar', department: 'ENG', regNo: '2020331035' } }
+            {
+              id: 'B1-4',
+              number: 4,
+              status: 'occupied',
+              student: {
+                name: 'Padma Talukdar',
+                department: 'ENG',
+                regNo: '2020331035'
+              }
+            }
           ]
         }
       ]
@@ -76,8 +100,26 @@ const SeatAllotment: React.FC = () => {
           id: 'C1',
           number: '218',
           seats: [
-            { id: 'C1-1', number: 1, status: 'occupied', student: { name: 'Zinnati Siddika Sumona', department: 'BMB', regNo: '2020331042' } },
-            { id: 'C1-2', number: 2, status: 'occupied', student: { name: 'Sumaiya Islam', department: 'MAT', regNo: '2021331015' } },
+            {
+              id: 'C1-1',
+              number: 1,
+              status: 'occupied',
+              student: {
+                name: 'Zinnati Siddika Sumona',
+                department: 'BMB',
+                regNo: '2020331042'
+              }
+            },
+            {
+              id: 'C1-2',
+              number: 2,
+              status: 'occupied',
+              student: {
+                name: 'Sumaiya Islam',
+                department: 'MAT',
+                regNo: '2021331015'
+              }
+            },
             { id: 'C1-3', number: 3, status: 'vacant' },
             { id: 'C1-4', number: 4, status: 'vacant' }
           ]
@@ -92,15 +134,33 @@ const SeatAllotment: React.FC = () => {
           id: 'D1',
           number: '325',
           seats: [
-            { id: 'D1-1', number: 1, status: 'occupied', student: { name: 'Kamrun Sumaiya', department: 'CSE', regNo: '2020331020' } },
+            {
+              id: 'D1-1',
+              number: 1,
+              status: 'occupied',
+              student: {
+                name: 'Kamrun Sumaiya',
+                department: 'CSE',
+                regNo: '2020331020'
+              }
+            },
             { id: 'D1-2', number: 2, status: 'vacant' },
-            { id: 'D1-3', number: 3, status: 'occupied', student: { name: 'Naila Nausheen Rahman', department: 'CSE', regNo: '2020331010' } },
+            {
+              id: 'D1-3',
+              number: 3,
+              status: 'occupied',
+              student: {
+                name: 'Naila Nausheen Rahman',
+                department: 'CSE',
+                regNo: '2020331010'
+              }
+            },
             { id: 'D1-4', number: 4, status: 'vacant' }
           ]
         }
       ]
     }
-  );
+  ];
 
   return (
     <div className="space-y-6">
@@ -131,9 +191,7 @@ const SeatAllotment: React.FC = () => {
             } transition-colors duration-200`}
           >
             <div className="flex items-center justify-center">
-              <Users size={24} className={`${
-                selectedBlock === block.id ? 'text-blue-500' : 'text-gray-400'
-              }`} />
+              <Users size={24} className={selectedBlock === block.id ? 'text-blue-500' : 'text-gray-400'} />
               <span className={`ml-2 font-medium ${
                 selectedBlock === block.id ? 'text-blue-700' : 'text-gray-700'
               }`}>
@@ -157,10 +215,7 @@ const SeatAllotment: React.FC = () => {
             {blocks
               .find((b) => b.id === selectedBlock)
               ?.rooms.map((room) => (
-                <div
-                  key={room.id}
-                  className="border border-gray-200 rounded-lg p-4"
-                >
+                <div key={room.id} className="border border-gray-200 rounded-lg p-4">
                   <h4 className="text-md font-medium text-gray-700 mb-3">
                     Room {room.number}
                   </h4>

@@ -1,10 +1,6 @@
 import React from 'react';
 
-interface SustLogoProps {
-  className?: string;
-}
-
-const SustLogo: React.FC<SustLogoProps> = ({ className = "h-10 w-10" }) => {
+const SustLogo = ({ className = "h-10 w-10" }) => {
   return (
     <div className={`relative ${className}`}>
       <img 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserPlus, Search, Phone, Mail, MapPin } from 'lucide-react';
 
-const ProvostBodyAndStaffs: React.FC = () => {
+const ProvostBodyAndStaffs = () => {
   // Sample provost body data
   const provostBody = [
     { 

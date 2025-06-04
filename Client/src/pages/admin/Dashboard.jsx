@@ -1,7 +1,7 @@
 import React from 'react';
 import { Users, ClipboardCheck, ClipboardX, AlertCircle } from 'lucide-react';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   // Sample statistics data
   const stats = [
     { 

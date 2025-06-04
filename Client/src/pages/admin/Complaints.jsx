@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search, Filter, MessageSquare, AlertCircle } from 'lucide-react';
 
-const Complaints: React.FC = () => {
+const Complaints = () => {
   // Sample complaints data
   const complaints = [
     { 

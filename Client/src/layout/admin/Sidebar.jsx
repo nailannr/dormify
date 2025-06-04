@@ -11,23 +11,18 @@ import {
   LayoutGrid
 } from 'lucide-react';
 
-interface SidebarProps {
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'DASHBOARD', path: '/', icon: <LayoutDashboard size={20} /> },
-    { name: 'ADMISSION APPLICATIONS', path: '/admission-applications', icon: <ClipboardCheck size={20} /> },
-    { name: 'CANCELLATION APPLICATIONS', path: '/cancellation-applications', icon: <ClipboardX size={20} /> },
-    { name: 'ADMITTED STUDENTS', path: '/admitted-students', icon: <Users size={20} /> },
-    { name: 'SEAT ALLOTMENT', path: '/seat-allotment', icon: <LayoutGrid size={20} /> },
-    { name: 'UPLOAD NOTICE', path: '/upload-notice', icon: <FileUp size={20} /> },
-    { name: 'COMPLAINTS', path: '/complaints', icon: <MessageSquare size={20} /> },
-    { name: 'PROVOST BODY AND STAFFS', path: '/provost-body-and-staffs', icon: <Users2 size={20} /> },
+    { name: 'DASHBOARD', path: '/admin/home', icon: <LayoutDashboard size={20} /> },
+    { name: 'ADMISSION APPLICATIONS', path: '/admin/admission-applications', icon: <ClipboardCheck size={20} /> },
+    { name: 'CANCELLATION APPLICATIONS', path: '/admin/cancellation-applications', icon: <ClipboardX size={20} /> },
+    { name: 'ADMITTED STUDENTS', path: '/admin/admitted-students', icon: <Users size={20} /> },
+    { name: 'SEAT ALLOTMENT', path: '/admin/seat-allotment', icon: <LayoutGrid size={20} /> },
+    { name: 'UPLOAD NOTICE', path: '/admin/upload-notice', icon: <FileUp size={20} /> },
+    { name: 'COMPLAINTS', path: '/admin/complaints', icon: <MessageSquare size={20} /> },
+    { name: 'PROVOST BODY AND STAFFS', path: '/admin/provost-body-and-staffs', icon: <Users2 size={20} /> },
   ];
 
   return (

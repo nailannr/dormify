@@ -1,25 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import SustLogo from '../components/SustLogo';
+import SustLogo from '../../components/admin/SustLogo';
 
-interface HeaderProps {
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
+const Header = ({ sidebarOpen, setSidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
     }
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -36,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
           >
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          
+
           <div className="flex items-center">
             <SustLogo className="h-12 w-12" />
             <div className="ml-3">
@@ -46,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -55,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
             <span className="text-sm font-medium mr-1">BEGUM FAZILATUNNESA MUJIB HALL</span>
             <ChevronDown size={16} className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
-          
+
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200 transition-all duration-200 ease-in-out">
               <Link

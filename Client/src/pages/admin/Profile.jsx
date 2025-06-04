@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, Mail, Phone, Lock, LogOut, Save } from 'lucide-react';
 
-const Profile: React.FC = () => {
+const Profile = () => {
   const [activeTab, setActiveTab] = useState('profile');
   
   // Sample user data
