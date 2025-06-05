@@ -29,7 +29,7 @@ const AdminLayout = () => {
         <main className="flex-1 overflow-y-auto bg-gray-100 p-4">
           <div className="container mx-auto">
             <Routes>
-              <Route path="/admin/dashboard" element={<Dashboard />} />
+              <Route path="/admin" element={<Dashboard />} />
               <Route path="/admin/admission-applications" element={<AdmissionApplications />} />
               <Route path="/admin/cancellation-applications" element={<CancellationApplications />} />
               <Route path="/admin/admitted-students" element={<AdmittedStudents />} />

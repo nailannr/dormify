@@ -54,14 +54,14 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200 transition-all duration-200 ease-in-out">
               <Link
-                to="/profile"
+                to="/admin/profile"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                 onClick={() => setDropdownOpen(false)}
               >
                 Profile
               </Link>
               <Link
-                to="/logout"
+                to="/admin/logout"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                 onClick={() => setDropdownOpen(false)}
               >

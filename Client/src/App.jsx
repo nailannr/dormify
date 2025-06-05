@@ -11,22 +11,12 @@ import SeatCancellation from "./components/user/seatCancel.jsx";
 import Update from "./components/user/update.jsx";
 import AvailableSeats from "./components/user/AvailableSeat.jsx";
 
-import Dashboard from './pages/admin/Dashboard.jsx'
-import AdmissionApplications from './pages/admin/AdmissionApplications.jsx'
-import CancellationApplications from './pages/admin/CancellationApplication.jsx'
-import AdmittedStudents from './pages/admin/AdmittedStudents.jsx'
-import SeatAllotment from './pages/admin/SeatAllotments.jsx'
-import UploadNotice from './pages/admin/UploadNotice.jsx'
-import Complaints from './pages/admin/Complaints.jsx'
-import ProvostBodyAndStaffs from './pages/admin/ProvostBodyAndStuffs.jsx'
-import Profile from './pages/admin/Profile.jsx'
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
 
 function App() {
   return (
     <Router>
-
-      <Routes>
+      {/* <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/signup" element={<Signup />} />
@@ -38,9 +28,9 @@ function App() {
         <Route path="/user/seatCancel" element={<SeatCancellation />} />
         <Route path="/user/update" element={<Update />} />
         <Route path="/user/AvailableSeat" element={<AvailableSeats />} />
+      </Routes> */}
 
-        <Route path="/admin" element={<Dashboard />} />
-      </Routes>
+      <AdminLayout/>
     </Router>
   );
 }

@@ -15,7 +15,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'DASHBOARD', path: '/admin/home', icon: <LayoutDashboard size={20} /> },
+    { name: 'DASHBOARD', path: '/admin', icon: <LayoutDashboard size={20} /> },
     { name: 'ADMISSION APPLICATIONS', path: '/admin/admission-applications', icon: <ClipboardCheck size={20} /> },
     { name: 'CANCELLATION APPLICATIONS', path: '/admin/cancellation-applications', icon: <ClipboardX size={20} /> },
     { name: 'ADMITTED STUDENTS', path: '/admin/admitted-students', icon: <Users size={20} /> },
