@@ -1,9 +1,16 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
 export default function Home() {
   const navigate = useNavigate();
+  useEffect(() => {
+  const role = localStorage.getItem('role');
+  if (role === 'admin' || role === 'superadmin') {
+    navigate('/admin/dashboard');
+  }
+  }, []);
+
 
   return (
     <div className="home-container">
@@ -14,6 +21,15 @@ export default function Home() {
         <button onClick={() => navigate("/user/seatCancel")}>Seat Cancellation</button>
         <button onClick={() => navigate("/user/update")}>Update</button>
         <button onClick={() => navigate("/user/complainBox")}>Complain Box</button>
+        <button
+  onClick={() => {
+    localStorage.clear();
+    navigate('/user/login');
+  }}
+>
+  Logout
+</button>
+
       </nav>
       <div className="welcome">
         <h2>Welcome to SUST Hall Admission Portal</h2>

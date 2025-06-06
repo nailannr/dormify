@@ -3,20 +3,43 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import API from '../../api';
 
+import { useEffect } from 'react';
+
+
 
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
+
+  
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    if (token) {
+      if (role === 'admin' || role === 'superadmin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/user/home');
+      }
+    }
+  }, []);
 
   const handleSubmit = async(e) => {
     e.preventDefault();
     console.log("Form Data:", form)
      try {
       const res = await API.post('/auth/login', form);
-      localStorage.setItem('token', res.data.token);
+      const {token, user} = res.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', user.role);
+      localStorage.setItem('dorm',user.dorm || '');
       alert('Login successful');
       // redirect to dashboard
-      navigate("/user/home");
+      if (user.role === 'admin' || user.role === 'superadmin') {
+          navigate('/admin/dashboard');
+      } else {
+          navigate('/user/home');
+      }
     } catch (err) {
       alert(err.response.data.message);
     }

@@ -15,7 +15,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'DASHBOARD', path: '/admin', icon: <LayoutDashboard size={20} /> },
+    { name: 'DASHBOARD', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'ADMISSION APPLICATIONS', path: '/admin/admission-applications', icon: <ClipboardCheck size={20} /> },
     { name: 'CANCELLATION APPLICATIONS', path: '/admin/cancellation-applications', icon: <ClipboardX size={20} /> },
     { name: 'ADMITTED STUDENTS', path: '/admin/admitted-students', icon: <Users size={20} /> },
@@ -24,6 +24,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     { name: 'COMPLAINTS', path: '/admin/complaints', icon: <MessageSquare size={20} /> },
     { name: 'PROVOST BODY AND STAFFS', path: '/admin/provost-body-and-staffs', icon: <Users2 size={20} /> },
   ];
+
+  
+
 
   return (
     <div className={`md:flex flex-col bg-blue-100 w-64 text-blue-900 border-r border-gray-200 ${sidebarOpen ? 'fixed inset-y-0 left-0 z-50' : 'hidden'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}>
@@ -47,6 +50,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               key={item.name}
               to={item.path}
               className={`group flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors duration-150 ease-in-out ${
+                // 
                 location.pathname === item.path
                 ? 'bg-blue-600 text-white'
                 : 'text-blue-900 hover:bg-blue-200'
