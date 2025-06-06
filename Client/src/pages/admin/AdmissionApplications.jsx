@@ -2,6 +2,13 @@ import React from 'react';
 import { Search, Filter, ArrowDownUp, Download } from 'lucide-react';
 
 const AdmissionApplications = () => {
+  // useEffect(() => {
+  // if (localStorage.getItem('role') !== 'admin') {
+  //   navigate('/user/login');
+  // }
+  // }, []);
+
+
   const applications = [
     { id: 'APP0014592', name: 'Nusrat Jahan', regNo: '2019331051', dept: 'CSE', date: '2023-05-12', status: 'Pending' },
     { id: 'APP0014593', name: 'Fahmida Yeasmin', regNo: '2019331062', dept: 'CSE', date: '2023-05-12', status: 'Approved' },

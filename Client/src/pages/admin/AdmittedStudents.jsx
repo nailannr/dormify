@@ -2,6 +2,15 @@ import React from 'react';
 import { Search, Filter, ArrowDownUp, Download, UserPlus } from 'lucide-react';
 
 const AdmittedStudents = () => {
+
+  // useEffect(() => {
+  // if (localStorage.getItem('role') !== 'admin') {
+  //   navigate('/user/login');
+  // }
+  // }, []);
+
+
+
   // Sample student data
   const students = [
     { id: 1, name: 'Kazi Nusrat Tasneem', regNo: '2019331051', dept: 'CSE', room: 'B-101', joinDate: '2020-01-15', status: 'Active' },
