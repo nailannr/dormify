@@ -60,13 +60,18 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 Profile
               </Link>
-              <Link
-                to="/admin/logout"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                onClick={() => setDropdownOpen(false)}
+              <button
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('role');
+                  setDropdownOpen(false);
+                  window.location.href = '/user/login'; // ✅ forces redirect
+                }}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
               >
                 Logout
-              </Link>
+              </button>
+
             </div>
           )}
         </div>
