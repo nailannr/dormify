@@ -37,7 +37,7 @@
 
 // export default App;
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from './components/user/login.jsx';
@@ -65,11 +65,20 @@ import ProvostBodyAndStaffs from "./pages/admin/ProvostBodyAndStuffs";
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
 
 function App() {
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [role, setRole] = useState(localStorage.getItem("role"));
 
-  console.log("Token:", token);
-  console.log("Role:", role)
+  // if (token === null || role === null) return <div>Loading...</div>;
+
+
+  useEffect(() => {
+    const handleStorage = () => {
+      setToken(localStorage.getItem("token"));
+      setRole(localStorage.getItem("role"));
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   return (
     <Router>

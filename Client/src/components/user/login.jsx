@@ -12,17 +12,6 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
 
   
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if (token) {
-      if (role === 'admin' || role === 'superadmin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/user/home');
-      }
-    }
-  }, []);
 
   const handleSubmit = async(e) => {
     e.preventDefault();
