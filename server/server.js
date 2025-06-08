@@ -10,6 +10,8 @@ const path = require('path');
 const userRouter = require('./routes/user.routes')
 const authRouter = require('./routes/auth')
 const noticeRouter = require('./routes/notice')
+const provostRouter = require('./routes/provost')
+const staffRouter = require('./routes/staff')
 
 const dbConnection = require('./config/db')
 dbConnection()
@@ -27,6 +29,8 @@ app.use('/api/auth',authRouter)
 app.use('/api/user',userRouter)
 app.use('/api/notice', noticeRouter)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/provosts', provostRouter)
+app.use('/api/staffs', staffRouter)
 
 const PORT = process.env.PORT || 5000;
 
