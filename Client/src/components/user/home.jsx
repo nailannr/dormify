@@ -26,9 +26,9 @@ export default function Home() {
             Dormify
           </h2>
           <div className="w-full bg-white rounded-2xl shadow-2xl p-8">
-            <h3 className="text-2xl font-bold text-emerald-700 mb-8 text-center tracking-wide">
+            {/*<h3 className="text-2xl font-bold text-emerald-700 mb-8 text-center tracking-wide">
               Dashboard
-            </h3>
+            </h3>*/}
             <div className="space-y-6">
               {/* Book a Seat Dropdown */}
               <div className="flex gap-2">
