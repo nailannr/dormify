@@ -68,8 +68,9 @@ router.patch('/:id', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Invalid status' });
     }
 
-    await Application.findByIdAndUpdate(req.params.id, { status });
-    res.json({ message: 'Application status updated' });
+    const app = await Application.findByIdAndUpdate(req.params.id, { status }, {new : true});
+    if (!app) return res.status(404).json({ message: 'Application not found' });
+    res.json({ message: 'Application status updated', application: app });
   } catch (err) {
     res.status(500).json({ message: 'Error updating application status' });
   }
