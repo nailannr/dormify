@@ -43,7 +43,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from './components/user/login.jsx';
 import Signup from './components/user/signup.jsx';
 import Home from "./components/user/home.jsx";
-import BookSeat from "./components/user/bookseat.jsx";
+import BookSeat1 from "./components/user/BookSeat1";
 import ComplainBox from "./components/user/complainBox.jsx";
 import HallNotice from "./components/user/hallNotice.jsx";
 import MakePayment from "./components/user/MakePayment.jsx";
@@ -101,7 +101,7 @@ function App() {
 
         {/* User routes */}
         <Route path="/user/home" element={<Home />} />
-        <Route path="/user/bookseat" element={<BookSeat />} />
+        <Route path="/user/bookseat1" element={<BookSeat1 />} />
         <Route path="/user/complainBox" element={<ComplainBox />} />
         <Route path="/user/hallNotice" element={<HallNotice />} />
         <Route path="/user/makePayment" element={<MakePayment />} />
