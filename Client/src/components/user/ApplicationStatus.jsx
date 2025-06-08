@@ -3,22 +3,42 @@ import { useNavigate } from "react-router-dom";
 
 export default function ApplicationStatus() {
   const navigate = useNavigate();
-  function handleSubmit(e) {
-    e.preventDefault();
-    navigate("/user/home");
+  const seats = [
+    { reg: "20201234", dept: "CSE", room: "101" },
+    { reg: "20204567", dept: "EEE", room: "102" },
+  ];
+  function handlePayment() {
+    navigate("/user/makePayment");
   }
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-yellow-50 via-green-50 to-blue-50">
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-4">
-        <h2 className="text-2xl font-bold text-yellow-700 mb-4 text-center">Application Status</h2>
-        <label className="block font-semibold">Name</label>
-        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-400" />
-        <label className="block font-semibold">Department</label>
-        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-400" />
-        <label className="block font-semibold">Contact</label>
-        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-400" />
-        <button type="submit" className="w-full py-2 bg-yellow-500 text-white rounded-lg font-semibold hover:bg-yellow-600 transition">Update</button>
-      </form>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-green-50 to-purple-50">
+      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl">
+        <h2 className="text-2xl font-bold text-blue-700 mb-6 text-center">Available Seats</h2>
+        <table className="min-w-full border">
+          <thead>
+            <tr className="bg-blue-100">
+              <th className="py-2 px-4 border">Reg. Number</th>
+              <th className="py-2 px-4 border">Department</th>
+              <th className="py-2 px-4 border">Room Number</th>
+              <th className="py-2 px-4 border">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {seats.map((seat, idx) => (
+              <tr key={idx} className="hover:bg-blue-50">
+                <td className="py-2 px-4 border">{seat.reg}</td>
+                <td className="py-2 px-4 border">{seat.dept}</td>
+                <td className="py-2 px-4 border">{seat.room}</td>
+                <td className="py-2 px-4 border">
+                  <button className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700" onClick={handlePayment}>
+                    Make Payment
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
