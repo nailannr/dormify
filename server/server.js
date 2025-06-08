@@ -1,10 +1,16 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
-const dotenv = require('dotenv')
-dotenv.config()
 const path = require('path');
 
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch((err) => console.error('MongoDB connection failed:', err));
 
 
 const userRouter = require('./routes/user.routes')
