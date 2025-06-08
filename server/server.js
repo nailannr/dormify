@@ -12,6 +12,7 @@ const authRouter = require('./routes/auth')
 const noticeRouter = require('./routes/notice')
 const provostRouter = require('./routes/provost')
 const staffRouter = require('./routes/staff')
+const applicationRouter = require('./routes/application')
 
 const dbConnection = require('./config/db')
 dbConnection()
@@ -31,6 +32,7 @@ app.use('/api/notice', noticeRouter)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/provosts', provostRouter)
 app.use('/api/staffs', staffRouter)
+app.use('/api/application', applicationRouter)
 
 const PORT = process.env.PORT || 5000;
 
