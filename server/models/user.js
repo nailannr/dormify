@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema({
         type: String, 
         enum: ['student','admin', 'superadmin'], 
         default: 'student'},
-    dorm: { type: String, enum: ['Dorm1', 'Dorm2', 'Dorm3'], required: function() { return this.role === 'admin'; } },
+    dorm: { type: String, enum: ['first', 'second', 'third'], required: function() { return this.role === 'admin'; } },
     isSelected: {type: Boolean, default: false}
 })
 

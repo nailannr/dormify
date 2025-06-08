@@ -49,7 +49,7 @@ import HallNotice from "./components/user/hallNotice.jsx";
 import MakePayment from "./components/user/MakePayment.jsx";
 import SeatCancellation from "./components/user/seatCancel.jsx";
 import Update from "./components/user/update.jsx";
-import AvailableSeats from "./components/user/AvailableSeat.jsx";
+//import AvailableSeats from "./components/user/AvailableSeat.jsx";
 
 import Dashboard from "./pages/admin/Dashboard";
 import AdmissionApplications from "./pages/admin/AdmissionApplications";
@@ -107,7 +107,7 @@ function App() {
         <Route path="/user/makePayment" element={<MakePayment />} />
         <Route path="/user/seatCancel" element={<SeatCancellation />} />
         <Route path="/user/update" element={<Update />} />
-        <Route path="/user/AvailableSeat" element={<AvailableSeats />} />
+        {/* <Route path="/user/AvailableSeat" element={<AvailableSeats />} /> */}
 
         {/* Admin layout route (all child admin pages live inside AdminLayout) */}
         <Route
