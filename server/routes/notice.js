@@ -58,4 +58,16 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// Public route to get published notices
+router.get('/public', async (req, res) => {
+  try {
+    const notices = await Notice.find({ status: 'Published' }).sort({ createdAt: -1 });
+    res.json(notices);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch notices' });
+  }
+});
+
+
 module.exports = router;

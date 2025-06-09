@@ -23,7 +23,7 @@ import Complaints from "./pages/admin/Complaints";
 import Profile from "./pages/admin/Profile";
 import ProvostBodyAndStaffs from "./pages/admin/ProvostBodyAndStuffs";
 import ApplicationStatus from "./components/user/ApplicationStatus.jsx";
-import ApplicationStatus2 from "./components/user/ApplicationStatus2.jsx";
+
 
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
 
