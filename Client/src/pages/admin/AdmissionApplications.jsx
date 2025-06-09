@@ -60,7 +60,7 @@ const AdmissionApplications = () => {
   const updateStatus = async (id, status) => {
     try {
       const token = localStorage.getItem('token');
-      await API.patch(`/applications/${id}`, { status }, {
+      await API.patch(`/application/${id}`, { status }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setApplications(prev =>
@@ -237,19 +237,36 @@ const AdmissionApplications = () => {
             </button>
             <h3 className="text-xl font-bold mb-4">Application Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              {Object.entries(selectedApp).map(([key, value]) => (
-                key !== '__v' && key !== '_id' && key !== 'photo' && (
+              {Object.entries(selectedApp).map(([key, value]) => {
+                if (['_id', '__v', 'photo'].includes(key)) return null;
+
+                // Handle populated objects like userId
+                if (key === 'userId' && typeof value === 'object') {
+                  return (
+                    <div key={key}>
+                      <strong>User Name:</strong> {value.name} <br />
+                      <strong>User Email:</strong> {value.email}
+                    </div>
+                  );
+                }
+
+                return (
                   <div key={key}>
-                    <strong className="capitalize">{key.replace(/([A-Z])/g, ' $1')}:</strong> {value}
+                    <strong className="capitalize">{key.replace(/([A-Z])/g, ' $1')}:</strong> {String(value)}
                   </div>
-                )
-              ))}
+                );
+              })}
               {selectedApp.photo && (
                 <div className="col-span-2">
                   <strong>Photo:</strong><br />
-                  <img src={`http://localhost:5000/${selectedApp.photo}`} alt="Uploaded" className="max-h-60 mt-2 rounded" />
+                  <img
+                    src={`http://localhost:5000/uploads/applications/${selectedApp.photo}`}
+                    alt="Uploaded"
+                    className="max-h-60 mt-2 rounded"
+                  />
                 </div>
               )}
+
             </div>
           </div>
         </div>

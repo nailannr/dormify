@@ -22,7 +22,8 @@ import UploadNotice from "./pages/admin/UploadNotice";
 import Complaints from "./pages/admin/Complaints";
 import Profile from "./pages/admin/Profile";
 import ProvostBodyAndStaffs from "./pages/admin/ProvostBodyAndStuffs";
-
+import ApplicationStatus from "./components/user/ApplicationStatus.jsx";
+import ApplicationStatus2 from "./components/user/ApplicationStatus2.jsx";
 
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
 
@@ -69,6 +70,8 @@ function App() {
         <Route path="/user/makePayment" element={<MakePayment />} />
         <Route path="/user/seatCancel" element={<SeatCancellation />} />
         <Route path="/user/update" element={<Update />} />
+        {/* <Route path="user/applicationStatus2" element={<ApplicationStatus2/>} /> */}
+        <Route path="user/applicationStatus" element={<ApplicationStatus/>} />
         {/* <Route path="/user/AvailableSeat" element={<AvailableSeats />} /> */}
 
         {/* Admin layout route (all child admin pages live inside AdminLayout) */}
