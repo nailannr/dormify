@@ -129,6 +129,19 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/mine', authMiddleware, async (req, res) => {
+  try {
+    const app = await Application.findOne({ userId: req.user.id });
+    if (!app) return res.status(404).json({ message: 'No application found.' });
+
+    res.json(app);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch application.' });
+  }
+});
+
+
 
 // Update application status (approve/reject)
 router.patch('/:id', authMiddleware, async (req, res) => {
@@ -140,6 +153,17 @@ router.patch('/:id', authMiddleware, async (req, res) => {
 
     const app = await Application.findByIdAndUpdate(req.params.id, { status }, {new : true});
     if (!app) return res.status(404).json({ message: 'Application not found' });
+
+    if (status === 'approved' && application.userId?.email) {
+      await sendEmail({
+        to: application.userId.email,
+        subject: '🎉 Your Dorm Application Has Been Approved!',
+        html: `<p>Hello <strong>${application.name}</strong>,</p>
+               <p>Your dorm admission application has been <strong>approved</strong>. Please proceed to the payment process in the website.</p>
+               <p>– Dormify Team</p>`
+      });
+    }
+
     res.json({ message: 'Application status updated', application: app });
   } catch (err) {
     res.status(500).json({ message: 'Error updating application status' });
