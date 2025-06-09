@@ -37,7 +37,7 @@ export default function BookSeat1() {
     motherIncome: "",
     address: "",
     note: "",
-    dorm: "first", // fixed for First Ladies Hall
+    dorm: "dorm1", // fixed for First Ladies Hall
   });
 
 
@@ -117,8 +117,8 @@ export default function BookSeat1() {
           <input name="fatherIncome" type="number" value={form.fatherIncome} onChange={handleChange} placeholder="Father's Yearly Income" required />
           <input name="motherIncome" type="number" value={form.motherIncome} onChange={handleChange} placeholder="Mother's Yearly Income" required />
           <textarea name="address" rows={2} value={form.address} onChange={handleChange} placeholder="Address" required />
-          <input type="file" accept="image/*" ref={photoRef} />
-          <textarea name="notes" rows={4} value={form.notes} onChange={handleChange} maxLength={1200} placeholder="Notes (max 200 words)" required />
+          <input type="file" name="photo" accept="image/*" ref={photoRef} />
+          <textarea name="note" rows={4} value={form.note} onChange={handleChange} maxLength={1200} placeholder="Notes (max 200 words)" required />
         </div>
         <div className="flex justify-center">
           <button

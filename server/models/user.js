@@ -8,8 +8,8 @@ const userSchema = mongoose.Schema({
         type: String, 
         enum: ['student','admin', 'superadmin'], 
         default: 'student'},
-    dorm: { type: String, enum: ['first', 'second', 'third'], required: function() { return this.role === 'admin'; } },
+    dorm: { type: String, enum: ['dorm1', 'dorm2', 'dorm3'], required: function() { return this.role === 'admin'; } },
     isSelected: {type: Boolean, default: false}
 })
 
-module.exports = mongoose.model('user',userSchema)
+module.exports = mongoose.model('User',userSchema)

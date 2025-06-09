@@ -19,7 +19,7 @@ const ApplicationSchema = new mongoose.Schema({
   note: String,
   dorm: { 
     type: String,
-    enum: ['first', 'second', 'third'], 
+    enum: ['dorm1', 'dorm2', 'dorm3'], 
     required: true 
   },
   photo: String, //path to uploaded photo
