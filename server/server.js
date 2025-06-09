@@ -13,7 +13,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => console.error('MongoDB connection failed:', err));
 
 
-const userRouter = require('./routes/user.routes')
+const userRouter = require('./routes/user')
 const authRouter = require('./routes/auth')
 const noticeRouter = require('./routes/notice')
 const provostRouter = require('./routes/provost')
