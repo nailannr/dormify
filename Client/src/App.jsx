@@ -26,6 +26,7 @@ import ApplicationStatus from "./components/user/ApplicationStatus.jsx";
 
 
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
+import PrivateRoute from "./components/user/PrivateRoute.jsx";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -63,15 +64,15 @@ function App() {
         <Route path="/user/signup" element={<Signup />} />
 
         {/* User routes */}
-        <Route path="/user/home" element={<Home />} />
-        <Route path="/user/bookseat1" element={<BookSeat1 />} />
-        <Route path="/user/complainBox" element={<ComplainBox />} />
-        <Route path="/user/hallNotice" element={<HallNotice />} />
+        <Route path="/user/home" element={<PrivateRoute><Home /></PrivateRoute>} />
+        <Route path="/user/bookseat1" element={<PrivateRoute><BookSeat1 /></PrivateRoute>} />
+        <Route path="/user/complainBox" element={<PrivateRoute><ComplainBox /></PrivateRoute>} />
+        <Route path="/user/hallNotice" element={<PrivateRoute><HallNotice /></PrivateRoute>} />
         <Route path="/user/makePayment" element={<MakePayment />} />
         <Route path="/user/seatCancel" element={<SeatCancellation />} />
         <Route path="/user/update" element={<Update />} />
         {/* <Route path="user/applicationStatus2" element={<ApplicationStatus2/>} /> */}
-        <Route path="user/applicationStatus" element={<ApplicationStatus/>} />
+        <Route path="user/applicationStatus" element={<PrivateRoute><ApplicationStatus/></PrivateRoute>} />
         {/* <Route path="/user/AvailableSeat" element={<AvailableSeats />} /> */}
 
         {/* Admin layout route (all child admin pages live inside AdminLayout) */}
