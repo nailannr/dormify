@@ -1,18 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, Lock, LogOut, Save } from 'lucide-react';
+import API from '../../api'
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('profile');
-  
-  // Sample user data
-  const userData = {
-    name: 'Admin User',
-    email: 'admin@sust.edu',
-    role: 'Hall Administrator',
-    phone: '+880-1712-345678',
-    joinDate: '2021-06-15',
-    lastLogin: '2023-05-15 09:30 AM',
+  const [userData, setUserData] = useState({
+    name: '',
+    email: '',
+    role: '',
+    joinDate: '',
+    lastLogin: '',
+  });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await API.get("/user/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUserData(res.data);
+      } catch (err) {
+        console.error('Failed to fetch profile:', err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      localStorage.removeItem("token");
+      navigate("/user/login");
+    }
   };
+
+  const handleProfileSave = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await API.put("/user/profile", {
+        name: userData.name
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert("Profile updated successfully!");
+    } catch (err) {
+      console.error("Profile update failed", err);
+      alert("Failed to update profile");
+    }
+  };
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+
+  const handlePasswordChange = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return alert("Please fill in all password fields");
+    }
+    if (newPassword !== confirmPassword) {
+      return alert("New passwords do not match");
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      await API.post("/user/change-password", {
+        currentPassword,
+        newPassword
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert("Password changed successfully!");
+      localStorage.removeItem("token");
+      navigate("/user/login");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to change password");
+    }
+  };
+
+
+
+
 
   return (
     <div className="space-y-6">
@@ -60,7 +130,9 @@ const Profile = () => {
             </div>
             
             <div className="mt-6 pt-6 border-t border-gray-200">
-              <button className="w-full flex items-center justify-center px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors">
                 <LogOut size={16} className="mr-2" />
                 <span>Sign Out</span>
               </button>
@@ -106,13 +178,13 @@ const Profile = () => {
                       type="text" 
                       id="role" 
                       className="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none"
-                      value={userData.role}
+                      value= {userData.role}
                       readOnly
                     />
                     <p className="text-xs text-gray-500 mt-1">Role cannot be changed. Contact system administrator for role changes.</p>
                   </div>
                   
-                  <div>
+                  {/* <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                       Phone Number
                     </label>
@@ -122,10 +194,10 @@ const Profile = () => {
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       defaultValue={userData.phone}
                     />
-                  </div>
+                  </div> */}
                   
                   <div className="pt-4">
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center">
+                    <button onClick={handleProfileSave} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center">
                       <Save size={16} className="mr-2" />
                       Save Changes
                     </button>
@@ -145,7 +217,9 @@ const Profile = () => {
                     </label>
                     <input 
                       type="password" 
-                      id="current-password" 
+                      id="current-password"
+                      value={currentPassword} 
+                      onChange={e => setCurrentPassword(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Enter your current password"
                     />
@@ -158,6 +232,8 @@ const Profile = () => {
                     <input 
                       type="password" 
                       id="new-password" 
+                      value={newPassword}
+                      onChange={e => setNewPassword(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Enter new password"
                     />
@@ -170,13 +246,17 @@ const Profile = () => {
                     <input 
                       type="password" 
                       id="confirm-password" 
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Confirm new password"
                     />
                   </div>
                   
                   <div className="pt-4">
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center">
+                    <button 
+                      onClick={handlePasswordChange}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center">
                       <Lock size={16} className="mr-2" />
                       Update Password
                     </button>
