@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Search, Filter, ArrowDownUp, Download } from 'lucide-react';
+import { Search, Filter, ArrowDownUp, Download, X } from 'lucide-react';
 import API from '../../api'
 
 const AdmissionApplications = () => {
@@ -12,18 +12,17 @@ const AdmissionApplications = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedApp, setSelectedApp] = useState(null);
 
-  const dorm = localStorage.getItem('dorm');
 
   const formatAppId = (mongoId) => 'APP' + mongoId.slice(-6).toUpperCase();
 
   useEffect(() => {
     fetchApplications();
-  }, [dorm, currentPage]);
+  }, [currentPage]);
 
   const fetchApplications = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await API.get(`/application/dorm/${dorm}?page=${currentPage}`, {
+      const res = await API.get(`/application?page=${currentPage}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setApplications(res.data.applications);
@@ -95,15 +94,6 @@ const AdmissionApplications = () => {
     setShowModal(true);
   };
 
-  // const applications = [
-  //   { id: 'APP0014592', name: 'Nusrat Jahan', regNo: '2019331051', dept: 'CSE', date: '2023-05-12', status: 'Pending' },
-  //   { id: 'APP0014593', name: 'Fahmida Yeasmin', regNo: '2019331062', dept: 'CSE', date: '2023-05-12', status: 'Approved' },
-  //   { id: 'APP0014594', name: 'Tasnim Rahman', regNo: '2019331042', dept: 'CSE', date: '2023-05-13', status: 'Pending' },
-  //   { id: 'APP0014595', name: 'Fariha Tabassum', regNo: '2020331024', dept: 'EEE', date: '2023-05-13', status: 'Pending' },
-  //   { id: 'APP0014596', name: 'Sanjida Akter', regNo: '2020331056', dept: 'EEE', date: '2023-05-14', status: 'Approved' },
-  //   { id: 'APP0014597', name: 'Sabrina Kabir', regNo: '2021331086', dept: 'CSE', date: '2023-05-14', status: 'Rejected' },
-  //   { id: 'APP0014598', name: 'Mahia Rahman', regNo: '2021331075', dept: 'SWE', date: '2023-05-15', status: 'Pending' },
-  // ];
 
   return (
     <div className="space-y-6">
@@ -176,8 +166,8 @@ const AdmissionApplications = () => {
               {filtered.map((application) => (
                 <tr key={application._id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">{formatAppId(application._id)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{application.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{application.regNo}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{application.userId?.name || '-'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{application.regNo || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{application.department}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(application.createdAt).toLocaleDateString()}
@@ -195,10 +185,10 @@ const AdmissionApplications = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onClick={()=> setSelectedApp(application)} className="text-blue-600 hover:text-blue-900 mr-3">View</button>
-                    {application.status === 'Pending' && (
+                    {application.status === 'pending' && (
                       <>
-                        <button onClick={() => updateStatus(app._id, 'approved')} className="text-green-600 hover:text-green-900 mr-3">Approve</button>
-                        <button onClick={() => updateStatus(app._id, 'rejected')} className="text-red-600 hover:text-red-900">Reject</button>
+                        <button onClick={() => updateStatus(application._id, 'approved')} className="text-green-600 hover:text-green-900 mr-3">Approve</button>
+                        <button onClick={() => updateStatus(application._id, 'rejected')} className="text-red-600 hover:text-red-900">Reject</button>
                       </>
                     )}
                   </td>
