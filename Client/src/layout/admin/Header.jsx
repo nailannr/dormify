@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SustLogo from '../../components/admin/SustLogo';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ sidebarOpen, setSidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate()
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -62,10 +64,12 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
               </Link>
               <button
                 onClick={() => {
-                  localStorage.removeItem('token');
-                  localStorage.removeItem('role');
-                  setDropdownOpen(false);
-                  window.location.href = '/user/login'; // ✅ forces redirect
+                  if (window.confirm("Are you sure you want to log out?")) {
+                    localStorage.removeItem("token");
+                    setDropdownOpen(false);
+                    navigate("/user/login");
+                  }
+  
                 }}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
               >
