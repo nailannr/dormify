@@ -1,166 +1,156 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Users, Search } from 'lucide-react';
+import API from '../../api';
 
 const SeatAllotment = () => {
   const [selectedBlock, setSelectedBlock] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [blocks, setBlocks] = useState({});
+  const [approvedStudents, setApprovedStudents] = useState([]);
+  const [selectedStudentMap, setSelectedStudentMap] = useState({});
 
-  const blocks = [
-    {
-      id: 'A',
-      name: 'Block A',
-      rooms: [
-        {
-          id: 'A1',
-          number: '301',
-          seats: [
-            {
-              id: 'A1-1',
-              number: 1,
-              status: 'occupied',
-              student: {
-                name: 'Kazi Nusrat Tasneem',
-                department: 'CSE',
-                regNo: '2020331066'
-              }
-            },
-            {
-              id: 'A1-2',
-              number: 2,
-              status: 'occupied',
-              student: {
-                name: 'Afia Fairuz',
-                department: 'BMB',
-                regNo: '2020331066'
-              }
-            },
-            {
-              id: 'A1-3',
-              number: 3,
-              status: 'occupied',
-              student: {
-                name: 'Sharaf Tasnim',
-                department: 'ENG',
-                regNo: '2020331045'
-              }
-            },
-            {
-              id: 'A1-4',
-              number: 4,
-              status: 'occupied',
-              student: {
-                name: 'Asmaul Hosna',
-                department: 'ANP',
-                regNo: '2020331062'
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'B',
-      name: 'Block B',
-      rooms: [
-        {
-          id: 'B1',
-          number: '312',
-          seats: [
-            {
-              id: 'B1-1',
-              number: 1,
-              status: 'occupied',
-              student: {
-                name: 'Nishamoni Sinha',
-                department: 'ANP',
-                regNo: '2020331028'
-              }
-            },
-            { id: 'B1-2', number: 2, status: 'vacant' },
-            { id: 'B1-3', number: 3, status: 'vacant' },
-            {
-              id: 'B1-4',
-              number: 4,
-              status: 'occupied',
-              student: {
-                name: 'Padma Talukdar',
-                department: 'ENG',
-                regNo: '2020331035'
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'C',
-      name: 'Block C',
-      rooms: [
-        {
-          id: 'C1',
-          number: '218',
-          seats: [
-            {
-              id: 'C1-1',
-              number: 1,
-              status: 'occupied',
-              student: {
-                name: 'Zinnati Siddika Sumona',
-                department: 'BMB',
-                regNo: '2020331042'
-              }
-            },
-            {
-              id: 'C1-2',
-              number: 2,
-              status: 'occupied',
-              student: {
-                name: 'Sumaiya Islam',
-                department: 'MAT',
-                regNo: '2021331015'
-              }
-            },
-            { id: 'C1-3', number: 3, status: 'vacant' },
-            { id: 'C1-4', number: 4, status: 'vacant' }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'D',
-      name: 'Block D',
-      rooms: [
-        {
-          id: 'D1',
-          number: '325',
-          seats: [
-            {
-              id: 'D1-1',
-              number: 1,
-              status: 'occupied',
-              student: {
-                name: 'Kamrun Sumaiya',
-                department: 'CSE',
-                regNo: '2020331020'
-              }
-            },
-            { id: 'D1-2', number: 2, status: 'vacant' },
-            {
-              id: 'D1-3',
-              number: 3,
-              status: 'occupied',
-              student: {
-                name: 'Naila Nausheen Rahman',
-                department: 'CSE',
-                regNo: '2020331010'
-              }
-            },
-            { id: 'D1-4', number: 4, status: 'vacant' }
-          ]
-        }
-      ]
+  // Fetch approved students from admin's dorm
+  const fetchApprovedStudents = async () => {
+      const token = localStorage.getItem('token');
+
+      const [appRes, seatRes] = await Promise.all([
+        API.get('/application', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        API.get('/seat', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      const approved = appRes.data.applications.filter(app=> app.status=== 'approved');
+      const validApplications = approved.filter(app => app.userId && app.userId._id)
+      const assignedStudentIds = seatRes.data
+        .map(seat => seat.studentId?._id)
+        .filter(id => id); // remove undefined
+
+      const unassigned = validApplications.filter(app =>
+        !assignedStudentIds.includes(app.userId._id)
+      );
+
+      setApprovedStudents(unassigned);
+    };
+
+  useEffect(() => {
+    fetchApprovedStudents();
+  }, []);
+
+
+
+  // Fetch seat data and group by block/room
+  useEffect(() => {
+    const fetchSeats = async () => {
+      const token = localStorage.getItem('token');
+      const res = await API.get('/seat', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Fetched seat data:",res.data)
+
+      const grouped = {};
+      for (let seat of res.data) {
+        const block = seat.block;
+        const room = seat.room;
+        if (!grouped[block]) grouped[block] = {};
+        if (!grouped[block][room]) grouped[block][room] = [];
+        grouped[block][room].push(seat);
+      }
+
+      // Convert to array structure for UI mapping
+      const structured = {};
+      Object.keys(grouped).forEach((blockId) => {
+        structured[blockId] = Object.keys(grouped[blockId]).map((roomNo) => ({
+          number: roomNo,
+          seats: grouped[blockId][roomNo],
+        }));
+      });
+
+      console.log("Structured blocks:",structured)
+
+      setBlocks(structured);
+    };
+    fetchSeats();
+  }, []);
+
+  const assignSeat = async (seatId, studentId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await API.post('/seat/assign', { seatId, studentId }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Refresh seats after assignment
+      const res = await API.get('/seat', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const grouped = {};
+      for (let seat of res.data) {
+        const block = seat.block;
+        const room = seat.room;
+        if (!grouped[block]) grouped[block] = {};
+        if (!grouped[block][room]) grouped[block][room] = [];
+        grouped[block][room].push(seat);
+      }
+
+      const structured = {};
+      Object.keys(grouped).forEach((blockId) => {
+        structured[blockId] = Object.keys(grouped[blockId]).map((roomNo) => ({
+          number: roomNo,
+          seats: grouped[blockId][roomNo],
+        }));
+      });
+
+      setBlocks(structured);
+      setSelectedStudentMap((prev) => ({ ...prev, [seatId]: '' }));
+    } catch (err) {
+      alert("Failed to assign seat");
+      console.error(err);
     }
-  ];
+  };
+
+  const unassignSeat = async (seatId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await API.post('/seat/unassign', { seatId }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const res = await API.get('/seat', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const grouped = {};
+      for (let seat of res.data) {
+        const block = seat.block;
+        const room = seat.room;
+        if (!grouped[block]) grouped[block] = {};
+        if (!grouped[block][room]) grouped[block][room] = [];
+        grouped[block][room].push(seat);
+      }
+
+      const structured = {};
+      Object.keys(grouped).forEach((blockId) => {
+        structured[blockId] = Object.keys(grouped[blockId]).map((roomNo) => ({
+          number: roomNo,
+          seats: grouped[blockId][roomNo],
+        }));
+      });
+
+      setBlocks(structured);
+
+      await fetchApprovedStudents();
+      
+    } catch (err) {
+      alert("Failed to remove student from seat");
+      console.error(err);
+    }
+  };
+
 
   return (
     <div className="space-y-6">
@@ -180,26 +170,26 @@ const SeatAllotment = () => {
 
       {/* Block Selection */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {blocks.map((block) => (
+        {Object.keys(blocks).map((blockId) => (
           <button
-            key={block.id}
-            onClick={() => setSelectedBlock(block.id)}
+            key={blockId}
+            onClick={() => setSelectedBlock(blockId)}
             className={`p-6 rounded-lg border ${
-              selectedBlock === block.id
+              selectedBlock === blockId
                 ? 'border-blue-500 bg-blue-50'
                 : 'border-gray-200 bg-white hover:bg-gray-50'
-            } transition-colors duration-200`}
+            }`}
           >
             <div className="flex items-center justify-center">
-              <Users size={24} className={selectedBlock === block.id ? 'text-blue-500' : 'text-gray-400'} />
+              <Users size={24} className={selectedBlock === blockId ? 'text-blue-500' : 'text-gray-400'} />
               <span className={`ml-2 font-medium ${
-                selectedBlock === block.id ? 'text-blue-700' : 'text-gray-700'
+                selectedBlock === blockId ? 'text-blue-700' : 'text-gray-700'
               }`}>
-                Block {block.id}
+                Block {blockId}
               </span>
             </div>
             <div className="mt-2 text-sm text-center text-gray-500">
-              {block.rooms.length} Rooms
+              {blocks[blockId].length} Rooms
             </div>
           </button>
         ))}
@@ -212,55 +202,84 @@ const SeatAllotment = () => {
             Block {selectedBlock} Rooms
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blocks
-              .find((b) => b.id === selectedBlock)
-              ?.rooms.map((room) => (
-                <div key={room.id} className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="text-md font-medium text-gray-700 mb-3">
-                    Room {room.number}
-                  </h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    {room.seats.map((seat) => (
-                      <div
-                        key={seat.id}
-                        className={`p-3 rounded-lg ${
-                          seat.status === 'occupied'
-                            ? 'bg-blue-50 border border-blue-200'
-                            : 'bg-gray-50 border border-gray-200'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium text-gray-600">
-                            Seat {seat.number}
-                          </span>
-                          <span
-                            className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                              seat.status === 'occupied'
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'bg-green-100 text-green-800'
-                            }`}
-                          >
-                            {seat.status === 'occupied' ? 'Occupied' : 'Vacant'}
-                          </span>
-                        </div>
-                        {seat.student && (
-                          <div className="space-y-1">
-                            <p className="text-sm font-medium text-gray-800">
-                              {seat.student.name}
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              {seat.student.department}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {seat.student.regNo}
-                            </p>
-                          </div>
-                        )}
+            {blocks[selectedBlock]?.map((room) => (
+              <div key={room.number} className="border border-gray-200 rounded-lg p-4">
+                <h4 className="text-md font-medium text-gray-700 mb-3">
+                  Room {room.number}
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  {room.seats.map((seat) => (
+                    <div
+                      key={seat._id}
+                      className={`p-3 rounded-lg ${
+                        seat.status === 'occupied'
+                          ? 'bg-blue-50 border border-blue-200'
+                          : 'bg-gray-50 border border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-gray-600">
+                          Seat {seat.seatNumber}
+                        </span>
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            seat.studentId
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-green-100 text-green-800'
+                          }`}
+                        >
+                          {seat.studentId ? 'Occupied' : 'Vacant'}
+                        </span>
                       </div>
-                    ))}
-                  </div>
+
+                      {seat.studentId && (
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-gray-800">{seat.studentId.name}</p>
+                          <p className="text-xs text-gray-600">{seat.studentId.department}</p>
+                          <p className="text-xs text-gray-500">{seat.studentApplication?.regNo || 'N/A'}</p>
+
+                          <button
+                            onClick={() => unassignSeat(seat._id)}
+                            className="mt-2 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
+
+                      {!seat.studentId && (
+                        <>
+                          <select
+                            onChange={(e) =>
+                              setSelectedStudentMap((prev) => ({ ...prev, [seat._id]: e.target.value }))
+                            }
+                            value={selectedStudentMap[seat._id] || ''}
+                            className="mt-2 w-full border p-1 rounded"
+                          >
+                            <option value="">Select Student</option>
+                            {approvedStudents.map((student) => (
+                              student.userId && (
+                                <option key={student._id} value={student.userId._id}>
+                                  {student.userId.name} ({student.regNo})
+                                </option>
+                              )
+
+                            ))}
+                          </select>
+                          <button
+                            onClick={() => assignSeat(seat._id, selectedStudentMap[seat._id])}
+                            disabled={!selectedStudentMap[seat._id]}
+                            className="mt-2 px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+                          >
+                            Assign
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -269,3 +288,5 @@ const SeatAllotment = () => {
 };
 
 export default SeatAllotment;
+
+

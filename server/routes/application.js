@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const Application = require('../models/Application');
@@ -112,7 +113,7 @@ router.get('/', authMiddleware, async (req, res) => {
     const total = await Application.countDocuments(filter);
 
     const applications = await Application.find(filter)
-      .populate('userId', 'name email')
+      .populate('userId', 'name regNo email')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -151,12 +152,13 @@ router.patch('/:id', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Invalid status' });
     }
 
-    const app = await Application.findByIdAndUpdate(req.params.id, { status }, {new : true});
+    const app = await Application.findByIdAndUpdate(req.params.id, { status }, {new : true})
+    .populate('userId', 'email');
     if (!app) return res.status(404).json({ message: 'Application not found' });
 
-    if (status === 'approved' && application.userId?.email) {
+    if (status === 'approved' && app.userId?.email) {
       await sendEmail({
-        to: application.userId.email,
+        to: app.userId.email,
         subject: '🎉 Your Dorm Application Has Been Approved!',
         html: `<p>Hello <strong>${application.name}</strong>,</p>
                <p>Your dorm admission application has been <strong>approved</strong>. Please proceed to the payment process in the website.</p>
