@@ -27,6 +27,11 @@ const ApplicationSchema = new mongoose.Schema({
     type: String,
     enum: ['pending', 'approved', 'rejected'],
     default: 'pending'
+  },
+  room: {
+    block: String,
+    room: String,
+    seatNumber: Number
   }
 }, { timestamps: true });
 
