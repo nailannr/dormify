@@ -10,6 +10,11 @@ const seatSchema = new mongoose.Schema({
     enum: ['vacant', 'occupied'],
     default: 'vacant'
   },
+  studentStatus: {
+    type: String,
+    enum: ['Active', 'On Leave', 'Inactive'],
+    default: 'Active'
+  },
   studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }
 }, { timestamps: true });
 
