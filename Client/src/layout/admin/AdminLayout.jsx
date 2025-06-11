@@ -12,6 +12,7 @@ import UploadNotice from '../../pages/admin/UploadNotice';
 import Complaints from '../../pages/admin/Complaints';
 import Profile from '../../pages/admin/Profile';
 import ProvostBodyAndStaffs from '../../pages/admin/ProvostBodyAndStuffs';
+import MonitorAdmins from '../../pages/admin/MonitorAdmins';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

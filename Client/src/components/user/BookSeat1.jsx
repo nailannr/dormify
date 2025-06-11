@@ -89,7 +89,7 @@ export default function BookSeat1() {
       >
         <div className="flex flex-col items-center mb-6">
           <img src={sustLogo} alt="SUST Logo" className="w-20 mb-2" />
-          <h2 className="text-3xl font-bold text-green-700 mb-1">Book A Seat - First Ladies Hall</h2>
+          <h2 className="text-3xl font-bold text-green-700 mb-1">Apply for seat - First Ladies Hall</h2>
           <p className="text-gray-500 text-sm">Please fill in all the information accurately.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

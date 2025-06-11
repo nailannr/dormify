@@ -8,7 +8,8 @@ import {
   FileUp, 
   MessageSquare, 
   Users2,
-  LayoutGrid
+  LayoutGrid,
+  UserCog
 } from 'lucide-react';
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
@@ -23,6 +24,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     { name: 'UPLOAD NOTICE', path: '/admin/upload-notice', icon: <FileUp size={20} /> },
     { name: 'COMPLAINTS', path: '/admin/complaints', icon: <MessageSquare size={20} /> },
     { name: 'PROVOST BODY AND STAFFS', path: '/admin/provost-body-and-staffs', icon: <Users2 size={20} /> },
+    { name: 'MONITOR ADMINS', path: '/admin/monitor-admins', icon: <UserCog size={20} /> }
   ];
 
   

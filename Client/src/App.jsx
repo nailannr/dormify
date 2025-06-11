@@ -24,6 +24,7 @@ import ProvostBodyAndStaffs from "./pages/admin/ProvostBodyAndStuffs";
 
 
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
+import MonitorAdmins from "./pages/admin/MonitorAdmins.jsx";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -87,6 +88,7 @@ function App() {
           <Route path="upload-notice" element={<UploadNotice />} />
           <Route path="complaints" element={<Complaints />} />
           <Route path="provost-body-and-staffs" element={<ProvostBodyAndStaffs />} />
+          <Route path="monitor-admins" element={<MonitorAdmins />} />
           <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
