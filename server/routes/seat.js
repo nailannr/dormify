@@ -54,20 +54,81 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
+
+router.get('/admitted', auth, async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search = '', status = '' } = req.query;
+    const skip = (page - 1) * limit;
+
+    const baseFilter = { studentId: { $ne: null } };
+    if (req.user.role === 'admin') {
+      baseFilter.dorm = req.user.dorm;
+    }
+
+    if (status) {
+      baseFilter.studentStatus = status;
+    }
+
+    const seats = await Seat.find(baseFilter)
+      .populate('studentId', 'name email')
+      .populate('studentApplication', 'regNo department createdAt')
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ 'studentApplication.createdAt': -1 });
+
+    
+    const searched = seats.filter(seat => {
+      const name = seat.studentId?.name || '';
+      const regNo = seat.studentApplication?.regNo || '';
+      const room = `${seat.block}-${seat.room}`;
+      return (
+        name.toLowerCase().includes(search.toLowerCase()) ||
+        regNo.toLowerCase().includes(search.toLowerCase()) ||
+        room.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+
+    const total = await Seat.countDocuments(baseFilter);
+    console.log("First Student dept:", seats[0]?.studentApplication?.department)
+    res.json({
+      students: searched.map(seat => ({
+        _id: seat._id,
+        name: seat.studentId?.name || '',
+        department: seat.studentApplication?.department || '',
+        email: seat.studentId?.email || '',
+        regNo: seat.studentApplication?.regNo || '',
+        room: `${seat.block}-${seat.room}`,
+        joinDate: seat.studentApplication?.createdAt || '',
+        status: seat.studentStatus || 'Active', // default fallback
+      })),
+      
+      currentPage: Number(page),
+      totalPages: Math.ceil(total / limit),
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch admitted students' });
+  }
+});
+
+
+
+
 //Assign a seat to a student
 router.post('/assign', auth, async (req, res) => {
   try {
     const { seatId, studentId } = req.body;
 
-    //Check seat existence and availability
+    
     const seat = await Seat.findById(seatId);
     if (!seat) return res.status(404).json({ message: 'Seat not found' });
     if (seat.studentId) return res.status(400).json({ message: 'Seat already assigned' });
 
-    console.log('Assigning seat to studentId:',studentId)
-    //Check student application
+    //console.log('Assigning seat to studentId:',studentId)
+    
     const app = await Application.findOne({ userId: new mongoose.Types.ObjectId(studentId), status: 'approved' });
-    console.log('Matched Application:',app);
+    //console.log('Matched Application:',app);
     if (!app) return res.status(400).json({ message: 'Student does not have approved application' });
 
     // Check if the student already has a seat
@@ -76,9 +137,9 @@ router.post('/assign', auth, async (req, res) => {
       return res.status(400).json({ message: 'Student already assigned to a seat' });
     }
 
-    // Assign
     seat.studentId = studentId;
     seat.status = 'occupied';
+    seat.studentStatus = 'Active'
     await seat.save();
 
     app.room ={
@@ -96,7 +157,7 @@ router.post('/assign', auth, async (req, res) => {
   }
 });
 
-// Unassign a seat
+//Unassign a seat
 router.post('/unassign', auth, async (req, res) => {
   try {
     const { seatId } = req.body;
@@ -114,6 +175,29 @@ router.post('/unassign', auth, async (req, res) => {
     res.status(500).json({ message: 'Failed to unassign seat' });
   }
 });
+
+//to update student status
+router.patch('/status/:seatId', auth, async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['Active', 'On Leave', 'Inactive'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    const seat = await Seat.findByIdAndUpdate(
+      req.params.seatId,
+      { studentStatus: status },
+      { new: true }
+    ).populate('studentId', 'name department email')
+     .populate('studentApplication', 'regNo createdAt');
+
+    res.json(seat);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to update status' });
+  }
+});
+
 
 
 module.exports = router;
