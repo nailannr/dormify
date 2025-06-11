@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import "./Signup.css";
 import API from '../../api'
+import SustLogo from "../admin/SustLogo";
 
 export default function Signup() {
   const [form,setForm] = useState({name:'', email:'', password:''});
@@ -22,7 +23,7 @@ export default function Signup() {
 
   return (
     <div className="auth-container">
-      <img src="/sust-logo.png" alt="SUST Logo" className="logo" />
+      <SustLogo/>
       <h2>Sign Up</h2>
       <form 
       // action="/user/signup"
