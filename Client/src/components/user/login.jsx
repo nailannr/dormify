@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import API from '../../api';
+import SustLogo from '../admin/SustLogo';
 
 import { useEffect } from 'react';
 
@@ -35,7 +36,7 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      <img src="/sust-logo.png" alt="SUST Logo" className="logo" />
+      <SustLogo />
       <h2>Sign In</h2>
       <form className="auth-form" onSubmit={handleSubmit}>
         <input type="email" placeholder="Email" name="email" onChange={e => setForm({ ...form, email: e.target.value })} required />
