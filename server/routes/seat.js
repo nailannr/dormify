@@ -89,7 +89,7 @@ router.get('/admitted', auth, async (req, res) => {
     });
 
     const total = await Seat.countDocuments(baseFilter);
-    console.log("First Student dept:", seats[0]?.studentApplication?.department)
+    
     res.json({
       students: searched.map(seat => ({
         _id: seat._id,
@@ -128,10 +128,10 @@ router.post('/assign', auth, async (req, res) => {
     //console.log('Assigning seat to studentId:',studentId)
     
     const app = await Application.findOne({ userId: new mongoose.Types.ObjectId(studentId), status: 'approved' });
-    //console.log('Matched Application:',app);
+
     if (!app) return res.status(400).json({ message: 'Student does not have approved application' });
 
-    // Check if the student already has a seat
+    
     const alreadyAssigned = await Seat.findOne({ studentId });
     if (alreadyAssigned) {
       return res.status(400).json({ message: 'Student already assigned to a seat' });

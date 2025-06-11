@@ -22,7 +22,7 @@ const ApplicationSchema = new mongoose.Schema({
     enum: ['dorm1', 'dorm2', 'dorm3'], 
     required: true 
   },
-  photo: String, //path to uploaded photo
+  photo: String, 
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],

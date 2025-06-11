@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
+const User= require('../models/user')
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-function authMiddleware(req, res, next) {
+async function authMiddleware(req, res, next) {
   const authHeader = req.headers['authorization']; 
 
   if (!authHeader || !authHeader.startsWith("Bearer ")){
@@ -12,8 +13,9 @@ function authMiddleware(req, res, next) {
 
   try {
     const verified = jwt.verify(token, JWT_SECRET); 
-    req.user = verified; 
-    //console.log("verified user in middleware:",verified)
+    const user = await User.findById(verified.id);
+    req.user = user; 
+    
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
