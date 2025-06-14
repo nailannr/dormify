@@ -22,11 +22,14 @@ export default function Login() {
       alert('Login successful');
       // redirect to dashboard
        if (res.data.changePass) {
-         navigate('/admin/profile');
+        //  navigate('/admin/profile');
+        window.location.href = '/admin/profile'
        } else if (user.role === 'admin' || user.role === 'superadmin') {
-         navigate('/admin/dashboard');
+        //  navigate('/admin/dashboard');
+        window.location.href = '/admin/dashboard'
        } else {
-         navigate('/user/home');
+        //  navigate('/user/home');
+        window.location.href = '/user/home'
        }
 
     } catch (err) {
