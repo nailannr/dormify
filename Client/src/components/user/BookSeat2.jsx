@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import sustLogo from "../../assets/sustLogo.png";
 import HallSlideshowBg from "./HallSlideShowBg";
 
-// Import your images
+
 import first1 from "../../assets/hall1jpg.jpg";
 import first2 from "../../assets/hall2.jpg";
 import first3 from "../../assets/hall3.jpg";
