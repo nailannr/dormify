@@ -1,3 +1,49 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# dotenv environment variables
+.env
+.env.*.local
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Optional: dist or build output
+dist/
+build/
+
+# Coverage directories for test tools like Jest
+coverage/
+
+# Optional npm cache
+.npm/
+
+# Optional Yarn cache
+.yarn/cache/
+
+# IDEs
+.idea/
+
+# Optional lock files (if you’re using only npm or only yarn, not both)
+package-lock.json
+yarn.lock
 
 # Node modules
 node_modules/

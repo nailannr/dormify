@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -24,8 +24,8 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  console.log("Login API hit!")
-  console.log("Received credentials:",email,password)
+  // console.log("Login API hit!")
+  // console.log("Received credentials:",email,password)
 
   try {
     const user = await User.findOne({ email });
@@ -34,9 +34,22 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ 
+      id: user._id, 
+      role: user.role,
+      dorm: user.dorm  
+    }, JWT_SECRET, { expiresIn: '1d' });
 
-    res.json({ token, user: { id: user._id, name: user.name, role: user.role } });
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        role: user.role,
+        dorm: user.dorm,
+      },
+      changePass: user.changePass 
+    });
   } catch (err) {
     console.error("Login error:",err)
     res.status(500).json({ message: 'Server error' });
