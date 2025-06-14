@@ -7,9 +7,9 @@ export default function Home() {
   const [selectedHall, setSelectedHall] = useState("");
 
   const handleGo = () => {
-    if (selectedHall === "first") navigate("/user/BookSeat1");
-    else if (selectedHall === "second") navigate("/user/BookSeat2");
-    else if (selectedHall === "third") navigate("/user/BookSeat3");
+    if (selectedHall === "dorm1") navigate("/user/BookSeat1");
+    else if (selectedHall === "dorm2") navigate("/user/BookSeat2");
+    else if (selectedHall === "dorm3") navigate("/user/BookSeat3");
   };
 
   const handleLogout = () => {
@@ -53,9 +53,9 @@ export default function Home() {
                   onChange={e => setSelectedHall(e.target.value)}
                 >
                   <option value="">Book a Seat (Select Hall)</option>
-                  <option value="first">First Ladies Hall</option>
-                  <option value="second">Second Ladies Hall</option>
-                  <option value="third">Third Ladies Hall</option>
+                  <option value="dorm1">First Ladies Hall</option>
+                  <option value="dorm2">Second Ladies Hall</option>
+                  <option value="dorm3">Third Ladies Hall</option>
                 </select>
                 <button
                   className={`px-6 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95 ${!selectedHall && "opacity-50 cursor-not-allowed"}`}

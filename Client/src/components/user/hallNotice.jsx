@@ -9,19 +9,22 @@ import API from "../../api";
 export default function HallNotice() {
   const navigate = useNavigate();
   const backgroundImages = [pic1, pic2, pic3];
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [notices, setNotices] = useState([]);
+  const [selectedDorm, setSelectedDorm] = useState('');
+
+  const fetchNotices = async (dorm = '') => {
+    try {
+      const url = dorm ? `/notice/public?dorm=${dorm}` : '/notice/public';
+      const res = await API.get(url);
+      setNotices(res.data);
+    } catch (err) {
+      console.error("Failed to fetch notices:", err);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        const res = await API.get("/notice/public");
-        setNotices(res.data);
-      } catch (err) {
-        console.error("Failed to fetch notices:", err);
-      }
-    };
     fetchNotices();
   }, []);
 
@@ -31,6 +34,12 @@ export default function HallNotice() {
     }, 3000);
     return () => clearInterval(interval);
   }, [backgroundImages.length]);
+
+  const handleDormChange = (e) => {
+    const value = e.target.value;
+    setSelectedDorm(value);
+    fetchNotices(value);
+  };
 
   return (
     <div
@@ -55,6 +64,20 @@ export default function HallNotice() {
           <h3 className="text-2xl font-bold text-emerald-700 mb-6 text-center">
             Hall Notices
           </h3>
+
+          <div className="mb-4 w-full text-center">
+            <label className="text-sm font-medium text-gray-700 mr-2">Filter by Hall:</label>
+            <select
+              className="border border-gray-300 rounded px-3 py-1 text-sm"
+              value={selectedDorm}
+              onChange={handleDormChange}
+            >
+              <option value="">All Halls</option>
+              <option value="dorm1">First Hall</option>
+              <option value="dorm2">Second Hall</option>
+              <option value="dorm3">Third Hall</option>
+            </select>
+          </div>
 
           {notices.length === 0 ? (
             <p className="text-gray-600">No notices available right now.</p>
