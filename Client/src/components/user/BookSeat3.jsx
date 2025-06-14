@@ -83,7 +83,7 @@ export default function BookSeat3() {
           </div>
           <div>
             <label className="block font-semibold mb-1">Hall Name</label>
-            <input type="text" required value="First Ladies Hall" readOnly className="w-full px-4 py-2 border rounded-lg bg-gray-100" />
+            <input type="text" required value="Begum Fazilatunnessa Mujib Ladies Hall" readOnly className="w-full px-4 py-2 border rounded-lg bg-gray-100" />
           </div>
           <div>
             <label className="block font-semibold mb-1">Phone Number</label>
