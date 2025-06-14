@@ -3,11 +3,33 @@ import { Menu, X, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SustLogo from '../../components/admin/SustLogo';
 import { useNavigate } from 'react-router-dom';
+import API from '../../api';
 
 const Header = ({ sidebarOpen, setSidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userName, setUserName] = useState('');
   const dropdownRef = useRef(null);
   const navigate = useNavigate()
+
+  //to fetch user info
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const res = await API.get('/user/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        setUserName(res.data?.name || '');
+      } catch (err) {
+        console.error("Failed to fetch user info:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -49,7 +71,9 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex items-center text-gray-700 hover:text-gray-900 focus:outline-none transition-colors"
           >
-            <span className="text-sm font-medium mr-1">BEGUM FAZILATUNNESA MUJIB HALL</span>
+            <span className="text-sm font-medium mr-1">
+              {userName || 'Loading...'}
+            </span>
             <ChevronDown size={16} className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
 

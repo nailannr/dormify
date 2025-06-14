@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserPlus, Search, Phone, Mail, Building, Edit, Trash2, X, Save } from 'lucide-react';
+import API from '../../api'
 
 const MonitorAdmins = () => {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -9,35 +10,31 @@ const MonitorAdmins = () => {
     name: '',
     email: '',
     phone: '',
-    dorm: ''
+    dorm: '',
+    password: ''
   });
 
-  // Sample admin data
-  const [admins, setAdmins] = useState([
-    {
-      id: 1,
-      name: '1st ladies Hall',
-      email: 'ladieshall1.admin@sust.edu',
-      phone: '+880-1712-345678',
-      dorm: '1st Hall'
-    },
-    {
-      id: 2,
-      name: 'Begum Sirajunnesa Chowdhury Hall',
-      email: 'ladieshall2.admin@sust.edu',
-      phone: '+880-1723-456789',
-      dorm: '2nd Hall'
-    },
-    {
-      id: 3,
-      name: 'Begum Fazilatunnesa Mujib Hall',
-      email: 'ladieshall3.admin@sust.edu',
-      phone: '+880-1734-567890',
-      dorm: '3rd Hall'
-    }
-  ]);
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await API.get('/admin', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setAdmins(res.data)
+      } catch (err) {
+        console.error('Failed to load admins:', err);
+      }
+    };
 
-  const dormOptions = ['1st Hall', '2nd Hall', '3rd Hall'];
+    fetchAdmins();
+  }, []);
+
+
+  
+  const [admins, setAdmins] = useState([]);
+
+  const dormOptions = ['dorm1', 'dorm2', 'dorm3'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -47,17 +44,27 @@ const MonitorAdmins = () => {
     }));
   };
 
-  const handleAddAdmin = () => {
-    if (formData.name && formData.email && formData.phone && formData.dorm) {
-      const newAdmin = {
-        id: Math.max(...admins.map(a => a.id)) + 1,
-        ...formData
-      };
-      setAdmins([...admins, newAdmin]);
+  const handleAddAdmin = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await API.post('/admin', formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Admin created');
       setFormData({ name: '', email: '', phone: '', dorm: '' });
       setShowAddForm(false);
+      // reload list
+      const res = await API.get('/admin', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdmins(res.data);
+    } catch (err) {
+      alert('Failed to create admin');
+      console.error(err);
     }
   };
+
+  
 
   const handleEditAdmin = (admin) => {
     setEditingAdmin(admin);
@@ -69,23 +76,40 @@ const MonitorAdmins = () => {
     });
   };
 
-  const handleUpdateAdmin = () => {
-    if (editingAdmin && formData.name && formData.email && formData.phone && formData.dorm) {
-      setAdmins(admins.map(admin => 
-        admin.id === editingAdmin.id 
-          ? { ...admin, ...formData }
-          : admin
-      ));
+  const handleUpdateAdmin = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await API.put(`/admin/${editingAdmin._id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Admin updated');
       setEditingAdmin(null);
-      setFormData({ name: '', email: '', phone: '', dorm: '' });
+      const res = await API.get('/admin', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdmins(res.data);
+    } catch (err) {
+      alert('Failed to update admin');
+      console.error(err);
     }
   };
 
-  const handleRemoveAdmin = (adminId) => {
-    if (window.confirm('Are you sure you want to remove this admin?')) {
-      setAdmins(admins.filter(admin => admin.id !== adminId));
+
+  const handleRemoveAdmin = async (id) => {
+    if (!window.confirm('Are you sure you want to remove this admin?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      await API.delete(`/admin/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Admin removed');
+      setAdmins(admins.filter(a => a._id !== id));
+    } catch (err) {
+      alert('Failed to remove admin');
+      console.error(err);
     }
   };
+
 
   const handleCancelEdit = () => {
     setEditingAdmin(null);
@@ -204,7 +228,25 @@ const MonitorAdmins = () => {
                 ))}
               </select>
             </div>
+
+            {!editingAdmin && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Initial Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="e.g. admin123"
+                  className="w-full px-4 py-2 border rounded-md"
+                />
+              </div>
+            )}
+            
           </div>
+
+         
+
           
           <div className="mt-6 flex space-x-3">
             <button
@@ -257,7 +299,7 @@ const MonitorAdmins = () => {
                   Edit
                 </button>
                 <button 
-                  onClick={() => handleRemoveAdmin(admin.id)}
+                  onClick={() => handleRemoveAdmin(admin._id)}
                   className="flex-1 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 transition-colors flex items-center justify-center"
                 >
                   <Trash2 size={14} className="mr-1" />

@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import {  Outlet } from 'react-router-dom';
+import { Route, Routes, Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 

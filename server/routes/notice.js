@@ -21,7 +21,7 @@ router.post('/', auth, upload.single('file'), async (req, res) => {
       content,
       status: status || 'Published',
       postedBy: req.user.id,
-      dorm: 'Dorm1',
+      dorm: req.user.dorm || 'dorm1',
       fileUrl
     });
 
@@ -51,7 +51,9 @@ router.delete('/:id', auth, async (req, res) => {
 // Get all notices by dorm
 router.get('/', auth, async (req, res) => {
   try {
-    const notices = await Notice.find({ dorm: 'Dorm1' }).sort({ createdAt: -1 });
+    const {role, id} = req.user;
+    const filter = role === 'superadmin' ? {} : {postedBy: id}
+    const notices = await Notice.find(filter).sort({ createdAt: -1 });
     res.json(notices);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching notices' });
@@ -61,7 +63,12 @@ router.get('/', auth, async (req, res) => {
 // Public route to get published notices
 router.get('/public', async (req, res) => {
   try {
-    const notices = await Notice.find({ status: 'Published' }).sort({ createdAt: -1 });
+    const { dorm } = req.query;
+    const filter = { status: 'Published' };
+    if (dorm) filter.dorm = dorm;
+
+    const notices = await Notice.find(filter)
+      .sort({ createdAt: -1 });
     res.json(notices);
   } catch (err) {
     console.error(err);

@@ -20,6 +20,10 @@ const applicationRouter = require('./routes/application')
 const complaintRouter = require('./routes/complaint')
 const seatRouter = require('./routes/seat')
 const paymentRouter = require('./routes/payment')
+const adminRouter = require('./routes/admin')
+
+const dbConnection = require('./config/db')
+dbConnection()
 
 app.use(cors({
   origin: 'http://localhost:5173', 
@@ -39,6 +43,8 @@ app.use('/api/application', applicationRouter)
 app.use('/api/complaint', complaintRouter)
 app.use('/api/seat',seatRouter)
 app.use('/api/payment', paymentRouter)
+app.use('/api/admin', adminRouter)
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

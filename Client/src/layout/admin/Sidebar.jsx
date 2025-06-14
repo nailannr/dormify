@@ -15,7 +15,8 @@ import {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
-
+  const role = localStorage.getItem("role")
+  
   const navItems = [
     { name: 'DASHBOARD', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'ADMISSION APPLICATIONS', path: '/admin/admission-applications', icon: <ClipboardCheck size={20} /> },
@@ -27,6 +28,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     { name: 'COMPLAINTS', path: '/admin/complaints', icon: <MessageSquare size={20} /> },
     { name: 'MONITOR ADMINS', path: '/admin/monitor-admins', icon: <UserCog size={20} /> },
     { name: 'PROVOST BODY AND STAFFS', path: '/admin/provost-body-and-staffs', icon: <Users2 size={20} /> },
+    ...(role === 'superadmin'
+      ? [{ name: 'MONITOR ADMINS', path: '/admin/monitor-admins', icon: <UserCog size={20} /> }]
+      : []
+    )
     
   ];
 

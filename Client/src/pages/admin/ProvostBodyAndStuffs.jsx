@@ -6,12 +6,17 @@ import API from '../../api';
 const ProvostBodyAndStaffs = () => {
   const [provostBody, setProvostBody] = useState([]);
   const [staffs, setStaffs] = useState([]);
+  const role = localStorage.getItem('role');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resProvost = await API.get('/provosts');
-        const resStaff = await API.get('/staffs');
+        const token = localStorage.getItem('token');
+        const config = {
+          headers: { Authorization: `Bearer ${token}` }
+        };
+        const resProvost = await API.get('/provosts',config);
+        const resStaff = await API.get('/staffs',config);
         setProvostBody(resProvost.data);
         setStaffs(resStaff.data);
       } catch (err) {
@@ -23,20 +28,7 @@ const ProvostBodyAndStaffs = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [form, setForm] = useState(null);
-  // name: '',
-  // role: '',
-  // department: '',
-  // email: '',
-  // phone: '',
-  // office: '',
-  // type: 'provost', // or 'staff'
-  // id: null, // for edit
 
-
-
-  const handleAddClick = (type) => {
-    setForm({ name: '', role: '', department: '', email: '', phone: '', office: '', type, id: null });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -183,6 +175,9 @@ const ProvostBodyAndStaffs = () => {
         <h4 className="text-lg font-semibold text-gray-900">{member.name}</h4>
         <p className="text-sm font-medium text-blue-600">{member.role}</p>
         <p className="text-xs text-gray-500 mt-1">{member.department}</p>
+        {role === 'superadmin' && (
+          <p className="text-xs text-gray-500">Dorm: {member.dorm}</p>
+        )}
         <div className="mt-4 space-y-2 text-sm text-gray-600">
           <div className="flex items-center"><Mail size={16} className="mr-2" /> {member.email}</div>
           <div className="flex items-center"><Phone size={16} className="mr-2" /> {member.phone}</div>
@@ -205,6 +200,9 @@ const ProvostBodyAndStaffs = () => {
       <div key={staff.id} className="bg-white rounded-lg shadow-sm border p-4 text-sm">
         <h4 className="text-md font-semibold text-gray-900">{staff.name}</h4>
         <p className="text-sm text-blue-600">{staff.role}</p>
+        {role === 'superadmin' && (
+          <p className="text-xs text-gray-500">Dorm: {staff.dorm}</p>
+        )}
         <div className="mt-2 text-gray-600 space-y-1">
           <div className="flex items-center"><Mail size={14} className="mr-1" /> {staff.email}</div>
           <div className="flex items-center"><Phone size={14} className="mr-1" /> {staff.phone}</div>

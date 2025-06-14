@@ -4,7 +4,10 @@ import API from '../../api'
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState(
+    localStorage.getItem('changePass') === 'true' ? 'security' : 'profile'
+  );
+
   const [userData, setUserData] = useState({
     name: '',
     email: '',
@@ -73,6 +76,12 @@ const Profile = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Password changed successfully!");
+
+      await API.put("/user/clear-pass-flag", {}, {
+        headers: {Authorization: `Bearer ${token}`}
+      })
+
+      localStorage.removeItem("changePass")
       localStorage.removeItem("token");
       navigate("/user/login");
     } catch (err) {
