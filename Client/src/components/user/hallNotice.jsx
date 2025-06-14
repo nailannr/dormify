@@ -1,30 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import sustLogo from "../../assets/sustLogo.png";
 import pic1 from "../../assets/hall1jpg.jpg";
 import pic2 from "../../assets/hall2.jpg";
 import pic3 from "../../assets/hall3.jpg";
+import API from "../../api";
 
 export default function HallNotice() {
   const navigate = useNavigate();
-  const notices = [
-    "Hall will be closed on 10th June for maintenance.",
-    "New seat allocation results published.",
-    "All residents must update their emergency contact information by 15th June.",
-    "Annual cultural night registration is open until 20th June."
-  ];
-
   const backgroundImages = [pic1, pic2, pic3];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [notices, setNotices] = useState([]);
+  const [selectedDorm, setSelectedDorm] = useState('');
 
-  
-  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const fetchNotices = async (dorm = '') => {
+    try {
+      const url = dorm ? `/notice/public?dorm=${dorm}` : '/notice/public';
+      const res = await API.get(url);
+      setNotices(res.data);
+    } catch (err) {
+      console.error("Failed to fetch notices:", err);
+    }
+  };
 
-  React.useEffect(() => {
+
+  useEffect(() => {
+    fetchNotices();
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
+      setCurrentIndex((prev) => (prev + 1) % backgroundImages.length);
     }, 3000);
     return () => clearInterval(interval);
   }, [backgroundImages.length]);
+
+  const handleDormChange = (e) => {
+    const value = e.target.value;
+    setSelectedDorm(value);
+    fetchNotices(value);
+  };
 
   return (
     <div
@@ -49,16 +64,50 @@ export default function HallNotice() {
           <h3 className="text-2xl font-bold text-emerald-700 mb-6 text-center">
             Hall Notices
           </h3>
-          <ul className="w-full space-y-6 max-h-[400px] overflow-y-auto px-4">
-            {notices.map((notice, idx) => (
-              <li
-                key={idx}
-                className="bg-emerald-50 border-l-8 border-emerald-500 px-6 py-4 rounded shadow text-gray-800 text-lg"
-              >
-                {notice}
-              </li>
-            ))}
-          </ul>
+
+          <div className="mb-4 w-full text-center">
+            <label className="text-sm font-medium text-gray-700 mr-2">Filter by Hall:</label>
+            <select
+              className="border border-gray-300 rounded px-3 py-1 text-sm"
+              value={selectedDorm}
+              onChange={handleDormChange}
+            >
+              <option value="">All Halls</option>
+              <option value="dorm1">First Hall</option>
+              <option value="dorm2">Second Hall</option>
+              <option value="dorm3">Third Hall</option>
+            </select>
+          </div>
+
+          {notices.length === 0 ? (
+            <p className="text-gray-600">No notices available right now.</p>
+          ) : (
+            <ul className="w-full space-y-6 max-h-[400px] overflow-y-auto px-4">
+              {notices.map((notice) => (
+                <li
+                  key={notice._id}
+                  className="bg-emerald-50 border-l-8 border-emerald-500 px-6 py-4 rounded shadow text-gray-800"
+                >
+                  <h4 className="font-bold text-lg mb-1">{notice.title}</h4>
+                  <p className="text-sm">{notice.content}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Posted on: {new Date(notice.createdAt).toLocaleDateString()}
+                  </p>
+                  {notice.fileUrl && (
+                    <a
+                      href={`http://localhost:5000${notice.fileUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 text-sm underline mt-2 inline-block"
+                    >
+                      View Attachment
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+
           <button
             className="mt-8 px-8 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95"
             onClick={() => navigate("/user/home")}
