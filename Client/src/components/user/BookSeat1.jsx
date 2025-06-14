@@ -37,7 +37,7 @@ export default function BookSeat1() {
     motherIncome: "",
     address: "",
     note: "",
-    dorm: "first", // fixed for First Ladies Hall
+    dorm: "dorm1", // fixed for First Ladies Hall
   });
 
 
