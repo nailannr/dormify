@@ -12,7 +12,7 @@ import ComplainBox from "./components/user/ComplainBox.jsx";
 import HallNotice from "./components/user/hallNotice.jsx";
 import MakePayment from "./components/user/MakePayment.jsx";
 import SeatCancellation from "./components/user/seatCancel.jsx";
-import Update from "./components/user/update.jsx";
+
 
 import Dashboard from "./pages/admin/Dashboard";
 import AdmissionApplications from "./pages/admin/AdmissionApplications";
@@ -87,7 +87,6 @@ function App() {
           <Route path="hallNotice" element={<HallNotice />} />
           <Route path="makePayment" element={<MakePayment />} />
           <Route path="seatCancel" element={<SeatCancellation />} />
-          <Route path="update" element={<Update />} />
           <Route path="applicationStatus" element={<ApplicationStatus />} />
         </Route>
         
