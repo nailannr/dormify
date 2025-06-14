@@ -1,12 +1,18 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import sustLogo from "../../assets/sustLogo.png";
+import HallSlideshowBg from "./HallSlideShowBg";
+
+// Import your images
+import first1 from "../../assets/hall1jpg.jpg";
+import first2 from "../../assets/hall2.jpg";
+import first3 from "../../assets/hall3.jpg";
 
 const departments = [
   "Architecture", "Chemical Engineering & Polymer Science", "Civil & Environmental Engineering", "Computer Science & Engineering", "Electrical & Electronic Engineering", "Food Engineering & Tea Technology", "Industrial & Production Engineering", "Mechanical Engineering", "Petroleum & Mining Engineering",
   "Genetic Engineering & Biotechnology", "Biochemistry & Molecular Biology", "Chemistry", "Geography & Environment", "Mathematics", "Physics", "Statistics", "Forestry & Environmental Science",
   "Bangla", "Economics", "English", "Political Studies", "Public Administration", "Social Work", "Sociology",
-  "Business Administration", "Tourism & Hospitality Management"
+  "Business Administration"
 ];
 
 export default function BookSeat2() {
@@ -18,15 +24,21 @@ export default function BookSeat2() {
     navigate("/user/AvailableSeat");
   }
 
+  const images = [first1, first2, first3];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-100 via-blue-100 to-purple-100">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+
+      <HallSlideshowBg images={images} />
+
+      
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-2xl p-10 w-full max-w-2xl space-y-6 border border-green-100"
+        className="relative z-10 bg-white bg-opacity-90 rounded-2xl shadow-2xl p-10 w-full max-w-2xl space-y-6 border border-green-100"
       >
         <div className="flex flex-col items-center mb-6">
           <img src={sustLogo} alt="SUST Logo" className="w-20 mb-2" />
-          <h2 className="text-3xl font-bold text-green-700 mb-1">Book A Seat - Second Ladies Hall</h2>
+          <h2 className="text-3xl font-bold text-green-700 mb-1">Apply For A Seat - Begum Sirajunnessa Chowdhury Ladies Hall</h2>
           <p className="text-gray-500 text-sm">Please fill in all the information accurately.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -71,7 +83,7 @@ export default function BookSeat2() {
           </div>
           <div>
             <label className="block font-semibold mb-1">Hall Name</label>
-            <input type="text" required value="Second Ladies Hall" readOnly className="w-full px-4 py-2 border rounded-lg bg-gray-100" />
+            <input type="text" required value="First Ladies Hall" readOnly className="w-full px-4 py-2 border rounded-lg bg-gray-100" />
           </div>
           <div>
             <label className="block font-semibold mb-1">Phone Number</label>
