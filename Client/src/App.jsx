@@ -27,6 +27,7 @@ import ApplicationStatus from "./components/user/ApplicationStatus.jsx";
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
 import MonitorAdmins from "./pages/admin/MonitorAdmins.jsx";
 import UserLayout from "./layout/user/UserLayout.jsx";
+import PaidApplicants from "./pages/admin/PaidApplicants.jsx";
 
 
 function App() {
@@ -107,6 +108,7 @@ function App() {
           <Route path="provost-body-and-staffs" element={<ProvostBodyAndStaffs />} />
           <Route path="monitor-admins" element={<MonitorAdmins />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="paid-applicants" element={<PaidApplicants />} />
         </Route>
       </Routes>
     </Router>

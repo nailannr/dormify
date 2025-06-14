@@ -9,37 +9,35 @@ const SeatAllotment = () => {
   const [approvedStudents, setApprovedStudents] = useState([]);
   const [selectedStudentMap, setSelectedStudentMap] = useState({});
 
-  // Fetch approved students from admin's dorm
+  // Fetch paid and unassigned students from admin's dorm
   const fetchApprovedStudents = async () => {
-      const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-      const [appRes, seatRes] = await Promise.all([
-        API.get('/application', {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        API.get('/seat', {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
+    const [paidRes, seatRes] = await Promise.all([
+      API.get('/application/paid', {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      API.get('/seat', {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
 
-      const approved = appRes.data.applications.filter(app=> app.status=== 'approved');
-      const validApplications = approved.filter(app => app.userId && app.userId._id)
-      const assignedStudentIds = seatRes.data
-        .map(seat => seat.studentId?._id)
-        .filter(id => id); // remove undefined
+    // Only students with userId and not already assigned a seat
+    const validApplications = paidRes.data.filter(app => app.userId && app.userId._id);
+    const assignedStudentIds = seatRes.data
+      .map(seat => seat.studentId?._id)
+      .filter(id => id); // remove undefined
 
-      const unassigned = validApplications.filter(app =>
-        !assignedStudentIds.includes(app.userId._id)
-      );
+    const unassigned = validApplications.filter(app =>
+      !assignedStudentIds.includes(app.userId._id)
+    );
 
-      setApprovedStudents(unassigned);
-    };
+    setApprovedStudents(unassigned);
+  };
 
   useEffect(() => {
     fetchApprovedStudents();
   }, []);
-
-
 
   // Fetch seat data and group by block/room
   useEffect(() => {
@@ -48,8 +46,6 @@ const SeatAllotment = () => {
       const res = await API.get('/seat', {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log("Fetched seat data:",res.data)
 
       const grouped = {};
       for (let seat of res.data) {
@@ -68,8 +64,6 @@ const SeatAllotment = () => {
           seats: grouped[blockId][roomNo],
         }));
       });
-
-      console.log("Structured blocks:",structured)
 
       setBlocks(structured);
     };
@@ -288,5 +282,3 @@ const SeatAllotment = () => {
 };
 
 export default SeatAllotment;
-
-

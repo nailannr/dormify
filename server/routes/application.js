@@ -172,5 +172,15 @@ router.patch('/:id', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/paid', async (req, res) => {
+  try {
+    const paidApplicants = await Application.find({ paid: true })
+      .select('name regNo department session dorm status room paid email phone stripeSessionId stripePaymentIntentId createdAt');
+    res.json(paidApplicants);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
 
