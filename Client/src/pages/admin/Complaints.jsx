@@ -1,255 +1,231 @@
-import React from 'react';
-import { Search, Filter, MessageSquare, AlertCircle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Search, MessageSquare, AlertCircle, X } from 'lucide-react';
+import API from '../../api';
 
 const Complaints = () => {
-  // Sample complaints data
-  const complaints = [
-    { 
-      id: 'COM001', 
-      student: 'Tasnim Ahmed', 
-      regNo: '2019331051', 
-      room: 'B-101', 
-      subject: 'Water Supply Issue', 
-      description: 'No water supply in bathroom for the last 2 days',
-      date: '2023-05-15', 
-      status: 'Pending',
-      priority: 'High' 
-    },
-    { 
-      id: 'COM002', 
-      student: 'Sabrina Hossain', 
-      regNo: '2019331062', 
-      room: 'B-102', 
-      subject: 'Electrical Problem', 
-      description: 'Power outlet in room not working properly',
-      date: '2023-05-14', 
-      status: 'In Progress',
-      priority: 'Medium' 
-    },
-    { 
-      id: 'COM003', 
-      student: 'Fariha Khan', 
-      regNo: '2019331045', 
-      room: 'B-103', 
-      subject: 'Furniture Repair', 
-      description: 'Chair in room is broken and needs replacement',
-      date: '2023-05-12', 
-      status: 'Resolved',
-      priority: 'Low' 
-    },
-    { 
-      id: 'COM004', 
-      student: 'Nusrat Jahan', 
-      regNo: '2020331028', 
-      room: 'B-201', 
-      subject: 'Internet Connectivity', 
-      description: 'WiFi signal is very weak in our room',
-      date: '2023-05-10', 
-      status: 'Pending',
-      priority: 'Medium' 
-    },
-    { 
-      id: 'COM005', 
-      student: 'Ayesha Rahman', 
-      regNo: '2020331035', 
-      room: 'B-202', 
-      subject: 'Security Concern', 
-      description: 'Main door lock is not working properly',
-      date: '2023-05-08', 
-      status: 'In Progress',
-      priority: 'High' 
-    },
-  ];
+  const [complaints, setComplaints] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [summary, setSummary] = useState({ pending: 0, inProgress: 0, resolved: 0 });
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editStatus, setEditStatus] = useState('');
+  const [editPriority, setEditPriority] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const limit = 10;
+
+  const fetchComplaints = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await API.get(`/complaint/admin?page=${currentPage}&limit=${limit}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setComplaints(res.data.complaints || []);
+      setTotalPages(res.data.totalPages || 1);
+      setSummary(res.data.summary || {});
+    } catch (err) {
+      console.error('Failed to fetch complaints:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchComplaints();
+  }, [currentPage]);
+
+  useEffect(() => {
+    let data = [...complaints];
+    if (statusFilter) {
+      data = data.filter(c => c.status.toLowerCase() === statusFilter.toLowerCase());
+    }
+    if (priorityFilter) {
+      data = data.filter(c => c.priority.toLowerCase() === priorityFilter.toLowerCase());
+    }
+    if (searchTerm) {
+      data = data.filter(c =>
+        c.userId?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.subject.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    setFiltered(data);
+  }, [complaints, statusFilter, priorityFilter, searchTerm]);
+
+  const handleStatusUpdate = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await API.patch(`/complaint/${selectedComplaint._id}/update`, {
+        status: editStatus,
+        priority: editPriority
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setEditModalOpen(false);
+      fetchComplaints();
+    } catch (err) {
+      console.error('Failed to update complaint:', err);
+      alert('Could not update complaint.');
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Complaints</h2>
-      </div>
+      <h2 className="text-2xl font-bold text-gray-800">Complaints</h2>
 
-      {/* Filters and Search */}
+      {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <div className="relative">
-            <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search complaints..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+        <div className="relative">
+          <Search className="absolute left-3 top-3 text-gray-400" size={18} />
+          <input
+            type="text"
+            placeholder="Search complaints..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border rounded-md"
+          />
         </div>
-        <div>
-          <div className="relative">
-            <Filter size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <select className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white">
-              <option value="">Filter by Status</option>
-              <option value="pending">Pending</option>
-              <option value="in-progress">In Progress</option>
-              <option value="resolved">Resolved</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <div className="relative">
-            <AlertCircle size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <select className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white">
-              <option value="">Filter by Priority</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-          </div>
-        </div>
+        <select onChange={(e) => setStatusFilter(e.target.value)} className="border rounded-md py-2 px-3">
+          <option value="">Filter by Status</option>
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+        </select>
+        <select onChange={(e) => setPriorityFilter(e.target.value)} className="border rounded-md py-2 px-3">
+          <option value="">Filter by Priority</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-red-700">Pending</p>
-              <p className="text-2xl font-bold text-red-800">2</p>
-            </div>
-            <div className="bg-red-100 p-3 rounded-full">
-              <AlertCircle size={24} className="text-red-600" />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-amber-700">In Progress</p>
-              <p className="text-2xl font-bold text-amber-800">2</p>
-            </div>
-            <div className="bg-amber-100 p-3 rounded-full">
-              <MessageSquare size={24} className="text-amber-600" />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-green-700">Resolved</p>
-              <p className="text-2xl font-bold text-green-800">1</p>
-            </div>
-            <div className="bg-green-100 p-3 rounded-full">
-              <MessageSquare size={24} className="text-green-600" />
-            </div>
-          </div>
+        <SummaryCard color="red" title="Pending" count={summary.pending} icon={<AlertCircle />} />
+        <SummaryCard color="amber" title="In Progress" count={summary.inProgress} icon={<MessageSquare />} />
+        <SummaryCard color="green" title="Resolved" count={summary.resolved} icon={<MessageSquare />} />
+      </div>
+
+      {/* Complaints Table */}
+      <div className="overflow-x-auto bg-white rounded-lg border">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+            <tr>
+              <th className="px-6 py-3 text-left">Student</th>
+              <th className="px-6 py-3 text-left">Room</th>
+              <th className="px-6 py-3 text-left">Subject</th>
+              <th className="px-6 py-3 text-left">Date</th>
+              <th className="px-6 py-3 text-left">Priority</th>
+              <th className="px-6 py-3 text-left">Status</th>
+              <th className="px-6 py-3 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {filtered.map(c => (
+              <tr key={c._id}>
+                <td className="px-6 py-4 text-sm text-gray-900">{c.userId.name}<div className="text-xs text-gray-500">{c.regNo}</div></td>
+                <td className="px-6 py-4 text-sm text-gray-500">{c.room}</td>
+                <td className="px-6 py-4 text-sm text-gray-700">{c.subject}</td>
+                <td className="px-6 py-4 text-sm text-gray-500">{new Date(c.createdAt).toLocaleDateString()}</td>
+                <td className="px-6 py-4">
+                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                    c.priority === 'High' ? 'bg-red-100 text-red-800' :
+                    c.priority === 'Medium' ? 'bg-amber-100 text-amber-800' :
+                    'bg-green-100 text-green-800'
+                  }`}>{c.priority}</span>
+                </td>
+                <td className="px-6 py-4">
+                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                    c.status === 'Resolved' ? 'bg-green-100 text-green-800' :
+                    c.status === 'In Progress' ? 'bg-amber-100 text-amber-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>{c.status}</span>
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  <button onClick={() => { setSelectedComplaint(c); setViewModalOpen(true); }} className="text-blue-600 hover:underline mr-2">View</button>
+                  <button onClick={() => {
+                    setSelectedComplaint(c);
+                    setEditStatus(c.status);
+                    setEditPriority(c.priority);
+                    setEditModalOpen(true);
+                  }} className="text-indigo-600 hover:underline">Edit</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="px-6 py-4 flex justify-between items-center bg-gray-50 border-t">
+        <div className="text-sm text-gray-500">Page {currentPage} of {totalPages}</div>
+        <div className="space-x-2">
+          <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 border rounded">Prev</button>
+          <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-3 py-1 border rounded">Next</button>
         </div>
       </div>
 
-      {/* Complaints List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Complaint ID
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Student
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Room
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Subject
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Priority
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {complaints.map((complaint) => (
-                <tr key={complaint.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
-                    {complaint.id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{complaint.student}</div>
-                    <div className="text-xs text-gray-500">{complaint.regNo}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {complaint.room}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">{complaint.subject}</div>
-                    <div className="text-xs text-gray-500 max-w-xs truncate">{complaint.description}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(complaint.date).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      complaint.priority === 'High' 
-                        ? 'bg-red-100 text-red-800' 
-                        : complaint.priority === 'Medium'
-                        ? 'bg-amber-100 text-amber-800'
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {complaint.priority}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      complaint.status === 'Resolved' 
-                        ? 'bg-green-100 text-green-800' 
-                        : complaint.status === 'In Progress'
-                        ? 'bg-amber-100 text-amber-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {complaint.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-blue-600 hover:text-blue-900 mr-3">View</button>
-                    {complaint.status !== 'Resolved' && (
-                      <button className="text-green-600 hover:text-green-900">
-                        {complaint.status === 'Pending' ? 'Process' : 'Resolve'}
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Pagination */}
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-          <div className="text-sm text-gray-500">
-            Showing <span className="font-medium">1</span> to <span className="font-medium">5</span> of <span className="font-medium">5</span> results
-          </div>
-          <div className="flex space-x-2">
-            <button className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white text-gray-400 cursor-not-allowed">
-              Previous
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-blue-600 text-white hover:bg-blue-700">
-              1
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white text-gray-400 cursor-not-allowed">
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* View Modal */}
+      {viewModalOpen && selectedComplaint && (
+        <Modal title="Complaint Details" onClose={() => setViewModalOpen(false)}>
+          <p><strong>Student:</strong> {selectedComplaint.userId.name}</p>
+          <p><strong>Reg No:</strong> {selectedComplaint.regNo}</p>
+          <p><strong>Room:</strong> {selectedComplaint.room}</p>
+          <p><strong>Subject:</strong> {selectedComplaint.subject}</p>
+          <p><strong>Description:</strong> {selectedComplaint.description}</p>
+          <p><strong>Status:</strong> {selectedComplaint.status}</p>
+          <p><strong>Priority:</strong> {selectedComplaint.priority}</p>
+        </Modal>
+      )}
+
+      {/* Edit Modal */}
+      {editModalOpen && selectedComplaint && (
+        <Modal title="Update Complaint" onClose={() => setEditModalOpen(false)}>
+          <label className="block mb-1 text-sm">Status</label>
+          <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)} className="w-full border rounded mb-4 p-2">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+          <label className="block mb-1 text-sm">Priority</label>
+          <select value={editPriority} onChange={(e) => setEditPriority(e.target.value)} className="w-full border rounded mb-4 p-2">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          <button onClick={handleStatusUpdate} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Save Changes</button>
+        </Modal>
+      )}
     </div>
   );
 };
+
+const SummaryCard = ({ color, title, count, icon }) => (
+  <div className={`bg-${color}-50 border border-${color}-200 rounded-lg p-4`}>
+    <div className="flex items-center justify-between">
+      <div>
+        <p className={`text-sm font-medium text-${color}-700`}>{title}</p>
+        <p className={`text-2xl font-bold text-${color}-800`}>{count}</p>
+      </div>
+      <div className={`bg-${color}-100 p-3 rounded-full`}>
+        {icon}
+      </div>
+    </div>
+  </div>
+);
+
+const Modal = ({ title, onClose, children }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+      <button onClick={onClose} className="absolute top-2 right-2 text-gray-600"><X /></button>
+      <h2 className="text-xl font-bold mb-4">{title}</h2>
+      {children}
+    </div>
+  </div>
+);
 
 export default Complaints;

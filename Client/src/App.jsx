@@ -1,16 +1,16 @@
+
 import React, {useEffect, useState} from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 
 import Login from './components/user/login.jsx';
 import Signup from './components/user/signup.jsx';
 import Home from "./components/user/home.jsx";
 import BookSeat1 from "./components/user/BookSeat1";
-import ComplainBox from "./components/user/complainBox.jsx";
+import ComplainBox from "./components/user/ComplainBox.jsx";
 import HallNotice from "./components/user/hallNotice.jsx";
 import MakePayment from "./components/user/MakePayment.jsx";
 import SeatCancellation from "./components/user/seatCancel.jsx";
 import Update from "./components/user/update.jsx";
-//import AvailableSeats from "./components/user/AvailableSeat.jsx";
 
 import Dashboard from "./pages/admin/Dashboard";
 import AdmissionApplications from "./pages/admin/AdmissionApplications";
@@ -21,15 +21,20 @@ import UploadNotice from "./pages/admin/UploadNotice";
 import Complaints from "./pages/admin/Complaints";
 import Profile from "./pages/admin/Profile";
 import ProvostBodyAndStaffs from "./pages/admin/ProvostBodyAndStuffs";
+import ApplicationStatus from "./components/user/ApplicationStatus.jsx";
 
 
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
 import MonitorAdmins from "./pages/admin/MonitorAdmins.jsx";
+import UserLayout from "./layout/user/UserLayout.jsx";
+
 
 function App() {
+
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [role, setRole] = useState(localStorage.getItem("role"));
 
+  
   // if (token === null || role === null) return <div>Loading...</div>;
 
 
@@ -41,6 +46,8 @@ function App() {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
+
+  
 
   return (
     <Router>
@@ -61,17 +68,27 @@ function App() {
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/signup" element={<Signup />} />
 
-        {/* User routes */}
-        <Route path="/user/home" element={<Home />} />
-        <Route path="/user/bookseat1" element={<BookSeat1 />} />
-        <Route path="/user/complainBox" element={<ComplainBox />} />
-        <Route path="/user/hallNotice" element={<HallNotice />} />
-        <Route path="/user/makePayment" element={<MakePayment />} />
-        <Route path="/user/seatCancel" element={<SeatCancellation />} />
-        <Route path="/user/update" element={<Update />} />
-        {/* <Route path="/user/AvailableSeat" element={<AvailableSeats />} /> */}
+        {/* User layout route */}
+        <Route
+          path="/user/*"
+          element={
+            token && (role === 'student')
+              ? <UserLayout />
+              : <Navigate to="/user/login" />
+          }
+        >
+          <Route path="home" element={<Home />} />
+          <Route path="bookseat1" element={<BookSeat1 />} />
+          <Route path="complainBox" element={<ComplainBox />} />
+          <Route path="hallNotice" element={<HallNotice />} />
+          <Route path="makePayment" element={<MakePayment />} />
+          <Route path="seatCancel" element={<SeatCancellation />} />
+          <Route path="update" element={<Update />} />
+          <Route path="applicationStatus" element={<ApplicationStatus />} />
+        </Route>
+        
 
-        {/* Admin layout route (all child admin pages live inside AdminLayout) */}
+        {/* Admin layout route */}
         <Route
           path="/admin/*"
           element={

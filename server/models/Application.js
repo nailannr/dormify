@@ -19,14 +19,19 @@ const ApplicationSchema = new mongoose.Schema({
   note: String,
   dorm: { 
     type: String,
-    enum: ['first', 'second', 'third'], 
+    enum: ['dorm1', 'dorm2', 'dorm3'], 
     required: true 
   },
-  photo: String, //path to uploaded photo
+  photo: String, 
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],
     default: 'pending'
+  },
+  room: {
+    block: String,
+    room: String,
+    seatNumber: Number
   }
 }, { timestamps: true });
 

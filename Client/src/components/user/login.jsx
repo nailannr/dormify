@@ -37,6 +37,7 @@ export default function Login() {
   return (
     <div className="auth-container">
       <SustLogo/>
+      <SustLogo />
       <h2>Sign In</h2>
       <form className="auth-form" onSubmit={handleSubmit}>
         <input type="email" placeholder="Email" name="email" onChange={e => setForm({ ...form, email: e.target.value })} required />
