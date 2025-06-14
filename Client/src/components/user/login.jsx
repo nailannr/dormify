@@ -21,13 +21,17 @@ export default function Login() {
       localStorage.setItem('token', token);
       localStorage.setItem('role', user.role);
       localStorage.setItem('dorm',user.dorm || '');
+      localStorage.setItem('changePass', res.data.changePass)
       alert('Login successful');
       // redirect to dashboard
-      if (user.role === 'admin' || user.role === 'superadmin') {
-          navigate('/admin/dashboard');
-      } else {
-          navigate('/user/home');
-      }
+       if (res.data.changePass) {
+         navigate('/admin/profile');
+       } else if (user.role === 'admin' || user.role === 'superadmin') {
+         navigate('/admin/dashboard');
+       } else {
+         navigate('/user/home');
+       }
+
     } catch (err) {
       alert(err.response.data.message);
     }

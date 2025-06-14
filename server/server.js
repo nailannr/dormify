@@ -21,6 +21,7 @@ const staffRouter = require('./routes/staff')
 const applicationRouter = require('./routes/application')
 const complaintRouter = require('./routes/complaint')
 const seatRouter = require('./routes/seat')
+const adminRouter = require('./routes/admin')
 
 const dbConnection = require('./config/db')
 dbConnection()
@@ -43,6 +44,7 @@ app.use('/api/staffs', staffRouter)
 app.use('/api/application', applicationRouter)
 app.use('/api/complaint', complaintRouter)
 app.use('/api/seat',seatRouter)
+app.use('/api/admin', adminRouter)
 
 
 const PORT = process.env.PORT || 5000;

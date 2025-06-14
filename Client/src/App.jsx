@@ -26,12 +26,13 @@ import ApplicationStatus from "./components/user/ApplicationStatus.jsx";
 
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
 import UserLayout from "./layout/user/UserLayout.jsx";
-
+import MonitorAdmins from "./pages/admin/MonitorAdmins.jsx";
 
 function App() {
 
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [role, setRole] = useState(localStorage.getItem("role"));
+  const changePass = localStorage.getItem('changePass') === 'true'
 
   
   // if (token === null || role === null) return <div>Loading...</div>;
@@ -92,7 +93,9 @@ function App() {
           path="/admin/*"
           element={
             token && (role === 'admin' || role === 'superadmin')
-              ? <AdminLayout />
+              ? changePass && role === 'admin'
+                ? <Navigate to= "/admin/profile" />
+                : <AdminLayout />
               : <Navigate to="/user/login" />
           }
         >
@@ -104,6 +107,12 @@ function App() {
           <Route path="upload-notice" element={<UploadNotice />} />
           <Route path="complaints" element={<Complaints />} />
           <Route path="provost-body-and-staffs" element={<ProvostBodyAndStaffs />} />
+          {
+            role === 'superadmin' && (
+              <Route path="monitor-admins" element={<MonitorAdmins />} />
+            )
+          }
+           
           <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
