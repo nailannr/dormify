@@ -16,7 +16,7 @@ export default function HallNotice() {
 
   const backgroundImages = [pic1, pic2, pic3];
 
-  // Animated background slideshow
+  
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   React.useEffect(() => {
