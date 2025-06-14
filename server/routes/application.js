@@ -24,10 +24,6 @@ const upload = multer({ storage });
 // Submit a new application
 router.post('/', authMiddleware, upload.single('photo'), async (req, res) => {
   try {
-    // console.log("Hit /application POST route");
-    // console.log("Body fields:", req.body);
-    // console.log("File:", req.file);
-    // console.log("Authenticated user:",req.user);
     const { 
       name,
       regNo,
