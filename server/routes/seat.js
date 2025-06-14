@@ -124,8 +124,6 @@ router.post('/assign', auth, async (req, res) => {
     const seat = await Seat.findById(seatId);
     if (!seat) return res.status(404).json({ message: 'Seat not found' });
     if (seat.studentId) return res.status(400).json({ message: 'Seat already assigned' });
-
-    //console.log('Assigning seat to studentId:',studentId)
     
     const app = await Application.findOne({ userId: new mongoose.Types.ObjectId(studentId), status: 'approved' });
 
@@ -150,6 +148,8 @@ router.post('/assign', auth, async (req, res) => {
 
     await app.save();
 
+    await User.findByIdAndUpdate(studentId, {isSelected: true});
+
     res.json({ message: 'Seat assigned successfully', seat });
   } catch (err) {
     console.error(err);
@@ -168,6 +168,10 @@ router.post('/unassign', auth, async (req, res) => {
     seat.studentId = null;
     seat.status = 'vacant'; 
     await seat.save();
+
+    if(seat.studentId){
+      await User.findByIdAndUpdate(studentId, {isSelected: false});
+    }
 
     res.json({ message: 'Seat unassigned successfully' });
   } catch (err) {

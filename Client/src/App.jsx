@@ -6,6 +6,8 @@ import Login from './components/user/login.jsx';
 import Signup from './components/user/signup.jsx';
 import Home from "./components/user/home.jsx";
 import BookSeat1 from "./components/user/BookSeat1";
+import BookSeat2 from "./components/user/BookSeat2.jsx"
+import BookSeat3 from "./components/user/BookSeat3.jsx"
 import ComplainBox from "./components/user/ComplainBox.jsx";
 import HallNotice from "./components/user/hallNotice.jsx";
 import MakePayment from "./components/user/MakePayment.jsx";
@@ -79,6 +81,8 @@ function App() {
         >
           <Route path="home" element={<Home />} />
           <Route path="bookseat1" element={<BookSeat1 />} />
+          <Route path="bookseat2" element={<BookSeat2 />} />
+          <Route path="bookseat3" element={<BookSeat3 />} />
           <Route path="complainBox" element={<ComplainBox />} />
           <Route path="hallNotice" element={<HallNotice />} />
           <Route path="makePayment" element={<MakePayment />} />

@@ -156,7 +156,7 @@ router.patch('/:id', authMiddleware, async (req, res) => {
       await sendEmail({
         to: app.userId.email,
         subject: '🎉 Your Dorm Application Has Been Approved!',
-        html: `<p>Hello <strong>${application.name}</strong>,</p>
+        html: `<p>Hello <strong>${app.name}</strong>,</p>
                <p>Your dorm admission application has been <strong>approved</strong>. Please proceed to the payment process in the website.</p>
                <p>– Dormify Team</p>`
       });
@@ -164,6 +164,7 @@ router.patch('/:id', authMiddleware, async (req, res) => {
 
     res.json({ message: 'Application status updated', application: app });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Error updating application status' });
   }
 });
