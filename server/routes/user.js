@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 router.get('/profile', authMiddleware, async (req, res) => {
   try {
@@ -41,6 +42,12 @@ router.put('/profile', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Profile update failed' });
   }
 });
+
+router.put('/clear-pass-flag', authMiddleware, async (req, res) => {
+  await User.findByIdAndUpdate(req.user._id, { changePass: false });
+  res.json({ message: "Password change requirement cleared" });
+});
+
 
 router.post('/change-password', authMiddleware, async (req, res) => {
   const { currentPassword, newPassword } = req.body;

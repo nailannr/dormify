@@ -9,6 +9,8 @@ const userSchema = mongoose.Schema({
         enum: ['student','admin', 'superadmin'], 
         default: 'student'},
     dorm: { type: String, enum: ['dorm1', 'dorm2', 'dorm3'], required: function() { return this.role === 'admin'; } },
+    phone: {type: String, function() { return this.role === 'admin'; }},
+    changePass: {type: Boolean, default: false, function() { return this.role === 'admin'; }},
     isSelected: {type: Boolean, default: false}
 })
 
