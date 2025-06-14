@@ -12,14 +12,14 @@ export default function ComplainBox() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // Here you might send the complaint to your backend
+    
     if (formRef.current) formRef.current.reset();
     alert("Your complaint has been submitted. Thank you!");
   }
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-green-100 to-emerald-100 flex flex-col">
-      {/* Top Bar with Scrolling Numbers */}
+
       <div className="w-full bg-emerald-700 py-2 overflow-hidden relative">
         <div className="absolute left-0 top-0 w-full h-full flex items-center">
           <marquee behavior="scroll" direction="left" scrollamount="7" className="text-white font-semibold text-base tracking-wide">
@@ -28,13 +28,13 @@ export default function ComplainBox() {
         </div>
       </div>
 
-      {/* Logo and Dormify Name at Top-Left */}
+
       <div className="absolute top-6 left-8 flex items-center space-x-3 z-10">
         <img src={sustLogo} alt="SUST Logo" className="w-14 h-14 drop-shadow-xl" />
         <span className="text-2xl font-extrabold text-emerald-700 font-serif tracking-wide">Dormify</span>
       </div>
 
-      {/* Centered Complain Box */}
+
       <div className="flex flex-1 items-center justify-center px-4 py-12">
         <form
           ref={formRef}
