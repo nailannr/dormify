@@ -28,7 +28,7 @@ router.post('/create-checkout-session', async (req, res) => {
         },
       ],
       success_url: `${process.env.CLIENT_URL}/user/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL}/user/application-status`,
+      cancel_url: `${process.env.CLIENT_URL}/user/applicationStatus`,
       metadata: {
         studentId,
       },
