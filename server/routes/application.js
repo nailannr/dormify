@@ -173,13 +173,11 @@ router.patch('/:id', authMiddleware, async (req, res) => {
 router.get('/paid', authMiddleware, async (req, res) => {
   try {
     const { role, dorm } = req.user;
-    
     let filter = { paid: true };
     if (role === 'admin') filter.dorm = dorm;
-
+    // Add userId to the select below:
     const paidApplicants = await Application.find(filter)
-      .select('name regNo department session dorm status room paid email phone stripeSessionId stripePaymentIntentId createdAt');
-
+      .select('userId name regNo department session dorm status room paid email phone stripeSessionId stripePaymentIntentId createdAt');
     res.json(paidApplicants);
   } catch (err) {
     res.status(500).json({ message: err.message });
