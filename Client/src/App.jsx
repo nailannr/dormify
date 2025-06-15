@@ -95,11 +95,10 @@ function App() {
           path="/admin/*"
           element={
             token && (role === 'admin' || role === 'superadmin')
-              ? changePass && role === 'admin'
-                ? <Navigate to= "/admin/profile" />
-                : <AdminLayout />
+              ? <AdminLayout />
               : <Navigate to="/user/login" />
           }
+
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="admission-applications" element={<AdmissionApplications />} />
