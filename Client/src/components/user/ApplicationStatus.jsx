@@ -57,7 +57,7 @@ export default function ApplicationStatus() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <SustLogo/>
+        <SustLogo />
         <h2 className="text-2xl font-extrabold text-emerald-700 mb-2 font-serif">Dormify</h2>
         <div className="text-emerald-700 text-lg font-semibold">Fetching your application status...</div>
         <div className="mt-4 animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
@@ -68,7 +68,7 @@ export default function ApplicationStatus() {
   if (notFound || !application) {
     return (
       <div className="max-w-xl mx-auto bg-white shadow-md p-6 rounded-lg mt-10 text-center">
-        <SustLogo/>
+        <SustLogo />
         <h2 className="text-2xl font-semibold text-emerald-700 mb-1 font-serif">Dormify</h2>
         <h3 className="text-xl font-bold text-gray-800 mb-3">No Application Found</h3>
         <p className="text-gray-600">You have not submitted any admission application yet.</p>
@@ -76,30 +76,60 @@ export default function ApplicationStatus() {
     );
   }
 
-  // Show thank you message if paid
+  // In the paid === true section:
   if (application.paid) {
     return (
       <div className="max-w-xl mx-auto bg-white shadow-md p-10 rounded-2xl mt-10 text-center">
-        <SustLogo/>
+        <SustLogo />
         <h2 className="text-2xl font-semibold text-emerald-700 mb-4 font-serif">Dormify</h2>
         <h3 className="text-xl font-bold text-emerald-700 mb-6">Thanks for your payment!</h3>
-        <p className="text-gray-700 text-lg">
-          Your room number and room key information will be available soon!
-        </p>
+
+        {/* Payment Status */}
+        <div className="mb-4">
+          <span className="font-semibold">Payment Status: </span>
+          <span className="ml-2 px-3 py-1 text-sm rounded-full font-semibold bg-green-100 text-green-800">
+            PAID
+          </span>
+        </div>
+
+        {/* Room Assignment */}
+        {application.room?.block && application.room?.room ? (
+          <div className="mb-4">
+            <span className="font-semibold">Room Assigned: </span>
+            <span className="ml-2 px-3 py-1 text-sm rounded-full font-semibold bg-blue-100 text-blue-800">
+              Block {application.room.block}, Room {application.room.room}, Seat {application.room.seatNumber}
+            </span>
+            <p className="mt-2 text-emerald-700">
+              Please collect your room key from the dorm office.
+            </p>
+          </div>
+        ) : (
+          <div className="mb-4">
+            <span className="font-semibold">Room Assignment: </span>
+            <span className="ml-2 px-3 py-1 text-sm rounded-full font-semibold bg-yellow-100 text-yellow-800">
+              Pending
+            </span>
+            <p className="mt-2 text-gray-600">
+              Your room number and key information will be available soon!
+            </p>
+          </div>
+        )}
+
         <button
-            className="mt-8 px-8 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95"
-            onClick={() => navigate("/user/home")}
-          >
-            Back to Home
-          </button>
+          className="mt-8 px-8 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95"
+          onClick={() => navigate("/user/home")}
+        >
+          Back to Home
+        </button>
       </div>
     );
   }
 
+
   return (
     <div className="max-w-2xl mx-auto bg-white shadow-2xl p-10 rounded-2xl mt-10">
       <div className="flex items-center mb-6">
-        <SustLogo/>
+        <SustLogo />
         <span className="text-2xl font-extrabold text-emerald-700 font-serif tracking-wide">Dormify</span>
       </div>
       <h2 className="text-2xl font-bold text-emerald-700 mb-6">Admission Application Status</h2>
