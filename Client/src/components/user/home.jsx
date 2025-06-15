@@ -52,10 +52,10 @@ export default function Home() {
                   value={selectedHall}
                   onChange={e => setSelectedHall(e.target.value)}
                 >
-                  <option value="">Book a Seat (Select Hall)</option>
+                  <option value="">Apply For A Seat (Select Hall)</option>
                   <option value="dorm1">First Ladies Hall</option>
-                  <option value="dorm2">Second Ladies Hall</option>
-                  <option value="dorm3">Third Ladies Hall</option>
+                  <option value="dorm2">Begum Sirajunnessa Chowdhury Ladies Hall</option>
+                  <option value="dorm3">Begum Fazilatunnessa Mujib Ladies Hall</option>
                 </select>
                 <button
                   className={`px-6 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95 ${!selectedHall && "opacity-50 cursor-not-allowed"}`}
@@ -97,7 +97,7 @@ export default function Home() {
           <p className="text-lg text-gray-700 text-center leading-relaxed">
             This is the official SUST Hall Admission Portal. <br /><br />
             <span className="font-semibold text-emerald-700">
-              Book your seat, check your application status, stay updated with hall notices, and let your voice be heard through the complain box—all in one place.
+              Apply for your seat, check your application status, stay updated with hall notices, and let your voice be heard through the complain box—all in one place.
             </span>
           </p>
         </div>
