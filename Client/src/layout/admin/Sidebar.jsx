@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   ClipboardCheck, 
-  ClipboardX, 
   Users, 
   FileUp, 
   MessageSquare, 
@@ -20,7 +19,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navItems = [
     { name: 'DASHBOARD', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'ADMISSION APPLICATIONS', path: '/admin/admission-applications', icon: <ClipboardCheck size={20} /> },
-    { name: 'CANCELLATION APPLICATIONS', path: '/admin/cancellation-applications', icon: <ClipboardX size={20} /> },
     { name: 'ADMITTED STUDENTS', path: '/admin/admitted-students', icon: <Users size={20} /> },
     { name: 'PAID APPLICANTS', path: '/admin/paid-applicants', icon: <CreditCard size={20} />},
     { name: 'SEAT ALLOTMENT', path: '/admin/seat-allotment', icon: <LayoutGrid size={20} /> },

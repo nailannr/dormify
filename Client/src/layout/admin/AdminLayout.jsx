@@ -3,17 +3,6 @@ import { Route, Routes, Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
-import Dashboard from '../../pages/admin/Dashboard';
-import AdmissionApplications from '../../pages/admin/AdmissionApplications';
-import CancellationApplications from '../../pages/admin/CancellationApplication';
-import AdmittedStudents from '../../pages/admin/AdmittedStudents';
-import SeatAllotment from '../../pages/admin/SeatAllotments';
-import UploadNotice from '../../pages/admin/UploadNotice';
-import Complaints from '../../pages/admin/Complaints';
-import Profile from '../../pages/admin/Profile';
-import ProvostBodyAndStaffs from '../../pages/admin/ProvostBodyAndStuffs';
-import MonitorAdmins from '../../pages/admin/MonitorAdmins';
-
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

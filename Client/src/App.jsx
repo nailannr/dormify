@@ -11,12 +11,10 @@ import BookSeat3 from "./components/user/BookSeat3.jsx"
 import ComplainBox from "./components/user/ComplainBox.jsx";
 import HallNotice from "./components/user/hallNotice.jsx";
 import MakePayment from "./components/user/MakePayment.jsx";
-import SeatCancellation from "./components/user/seatCancel.jsx";
 import PaymentSuccess from "./components/user/PaymentSuccess.jsx";
 
 import Dashboard from "./pages/admin/Dashboard";
 import AdmissionApplications from "./pages/admin/AdmissionApplications";
-import CancellationApplications from "./pages/admin/CancellationApplication";
 import AdmittedStudents from "./pages/admin/AdmittedStudents";
 import SeatAllotment from "./pages/admin/SeatAllotments";
 import UploadNotice from "./pages/admin/UploadNotice";
@@ -87,7 +85,6 @@ function App() {
           <Route path="complainBox" element={<ComplainBox />} />
           <Route path="hallNotice" element={<HallNotice />} />
           <Route path="makePayment" element={<MakePayment />} />
-          <Route path="seatCancel" element={<SeatCancellation />} />
           <Route path="payment-success" element={<PaymentSuccess/>} />
           <Route path="applicationStatus" element={<ApplicationStatus />} />
         </Route>
@@ -106,7 +103,6 @@ function App() {
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="admission-applications" element={<AdmissionApplications />} />
-          <Route path="cancellation-applications" element={<CancellationApplications />} />
           <Route path="admitted-students" element={<AdmittedStudents />} />
           <Route path="seat-allotment" element={<SeatAllotment />} />
           <Route path="upload-notice" element={<UploadNotice />} />
