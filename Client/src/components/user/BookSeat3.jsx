@@ -166,7 +166,7 @@ export default function BookSeat3() {
             <input
               type="text"
               readOnly
-              value="Third Ladies Hall"
+              value="Begum Fazilatunnessa Mujib Ladies Hall"
               className="w-full px-4 py-2 border rounded-lg bg-gray-100"
             />
           </div>
