@@ -74,51 +74,39 @@ const SeatAllotment = () => {
     fetchSeats();
   }, []);
 
-  const assignSeat = async (seatId, applicationId) => {
-    try {
-      const token = localStorage.getItem('token');
-      // Find the applicant object by applicationId
-      const applicant = paidApplicants.find(app => app._id === applicationId);
-      if (!applicant) {
-        alert("Applicant not found.");
-        return;
-      }
-      // You may need to get the userId from the application if your backend expects userId
-      await API.post('/seat/assign', { seatId, studentId: applicant.userId }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      // Refresh seats after assignment
-      const res = await API.get('/seat', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const grouped = {};
-      for (let seat of res.data) {
-        const block = seat.block;
-        const room = seat.room;
-        if (!grouped[block]) grouped[block] = {};
-        if (!grouped[block][room]) grouped[block][room] = [];
-        grouped[block][room].push(seat);
-      }
-
-      const structured = {};
-      Object.keys(grouped).forEach((blockId) => {
-        structured[blockId] = Object.keys(grouped[blockId]).map((roomNo) => ({
-          number: roomNo,
-          seats: grouped[blockId][roomNo],
-        }));
-      });
-
-      setBlocks(structured);
-      setSelectedStudentMap((prev) => ({ ...prev, [seatId]: '' }));
-      // Refresh paid applicants list
-      await fetchPaidApplicants();
-    } catch (err) {
-      alert("Failed to assign seat");
-      console.error(err);
+  const assignSeat = async (seatId, userId) => {
+  try {
+    const token = localStorage.getItem('token');
+    await API.post('/seat/assign', { seatId, studentId: userId }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    // Refresh seats after assignment
+    const res = await API.get('/seat', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const grouped = {};
+    for (let seat of res.data) {
+      const block = seat.block;
+      const room = seat.room;
+      if (!grouped[block]) grouped[block] = {};
+      if (!grouped[block][room]) grouped[block][room] = [];
+      grouped[block][room].push(seat);
     }
-  };
+    const structured = {};
+    Object.keys(grouped).forEach((blockId) => {
+      structured[blockId] = Object.keys(grouped[blockId]).map((roomNo) => ({
+        number: roomNo,
+        seats: grouped[blockId][roomNo],
+      }));
+    });
+    setBlocks(structured);
+    setSelectedStudentMap((prev) => ({ ...prev, [seatId]: '' }));
+    await fetchPaidApplicants();
+  } catch (err) {
+    alert("Failed to assign seat");
+    console.error(err);
+  }
+};
 
   const unassignSeat = async (seatId) => {
     try {
@@ -175,17 +163,15 @@ const SeatAllotment = () => {
           <button
             key={blockId}
             onClick={() => setSelectedBlock(blockId)}
-            className={`p-6 rounded-lg border ${
-              selectedBlock === blockId
+            className={`p-6 rounded-lg border ${selectedBlock === blockId
                 ? 'border-blue-500 bg-blue-50'
                 : 'border-gray-200 bg-white hover:bg-gray-50'
-            }`}
+              }`}
           >
             <div className="flex items-center justify-center">
               <Users size={24} className={selectedBlock === blockId ? 'text-blue-500' : 'text-gray-400'} />
-              <span className={`ml-2 font-medium ${
-                selectedBlock === blockId ? 'text-blue-700' : 'text-gray-700'
-              }`}>
+              <span className={`ml-2 font-medium ${selectedBlock === blockId ? 'text-blue-700' : 'text-gray-700'
+                }`}>
                 Block {blockId}
               </span>
             </div>
@@ -212,22 +198,20 @@ const SeatAllotment = () => {
                   {room.seats.map((seat) => (
                     <div
                       key={seat._id}
-                      className={`p-3 rounded-lg ${
-                        seat.status === 'occupied'
+                      className={`p-3 rounded-lg ${seat.status === 'occupied'
                           ? 'bg-blue-50 border border-blue-200'
                           : 'bg-gray-50 border border-gray-200'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium text-gray-600">
                           Seat {seat.seatNumber}
                         </span>
                         <span
-                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                            seat.studentId
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${seat.studentId
                               ? 'bg-blue-100 text-blue-800'
                               : 'bg-green-100 text-green-800'
-                          }`}
+                            }`}
                         >
                           {seat.studentId ? 'Occupied' : 'Vacant'}
                         </span>
@@ -250,26 +234,26 @@ const SeatAllotment = () => {
                       {!seat.studentId && (
                         <>
                           <select
-                            onChange={(e) =>
-                              setSelectedStudentMap((prev) => ({ ...prev, [seat._id]: e.target.value }))
-                            }
-                            value={selectedStudentMap[seat._id] || ''}
-                            className="mt-2 w-full border p-1 rounded"
-                          >
-                            <option value="">Select Student</option>
-                            {filteredApplicants.map((student) => (
-                              <option key={student._id} value={student._id}>
-                                {student.name} ({student.regNo})
-                              </option>
-                            ))}
-                          </select>
+  onChange={(e) =>
+    setSelectedStudentMap((prev) => ({ ...prev, [seat._id]: e.target.value }))
+  }
+  value={selectedStudentMap[seat._id] || ''}
+  className="mt-2 w-full border p-1 rounded"
+>
+  <option value="">Select Student</option>
+  {filteredApplicants.map((student) => (
+    <option key={student._id} value={student.userId}>
+      {student.name} ({student.regNo})
+    </option>
+  ))}
+</select>
                           <button
-                            onClick={() => assignSeat(seat._id, selectedStudentMap[seat._id])}
-                            disabled={!selectedStudentMap[seat._id]}
-                            className="mt-2 px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
-                          >
-                            Assign
-                          </button>
+  onClick={() => assignSeat(seat._id, selectedStudentMap[seat._id])}
+  disabled={!selectedStudentMap[seat._id]}
+  className="mt-2 px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+>
+  Assign
+</button>
                         </>
                       )}
                     </div>
