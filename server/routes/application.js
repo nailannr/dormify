@@ -169,5 +169,22 @@ router.patch('/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// application.js (full updated /paid route)
+router.get('/paid', authMiddleware, async (req, res) => {
+  try {
+    const { role, dorm } = req.user;
+    
+    let filter = { paid: true };
+    if (role === 'admin') filter.dorm = dorm;
+
+    const paidApplicants = await Application.find(filter)
+      .select('name regNo department session dorm status room paid email phone stripeSessionId stripePaymentIntentId createdAt');
+
+    res.json(paidApplicants);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
 

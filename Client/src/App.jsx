@@ -12,7 +12,7 @@ import ComplainBox from "./components/user/ComplainBox.jsx";
 import HallNotice from "./components/user/hallNotice.jsx";
 import MakePayment from "./components/user/MakePayment.jsx";
 import SeatCancellation from "./components/user/seatCancel.jsx";
-
+import PaymentSuccess from "./components/user/PaymentSuccess.jsx";
 
 import Dashboard from "./pages/admin/Dashboard";
 import AdmissionApplications from "./pages/admin/AdmissionApplications";
@@ -27,8 +27,9 @@ import ApplicationStatus from "./components/user/ApplicationStatus.jsx";
 
 
 import AdminLayout from "./layout/admin/AdminLayout.jsx";
-import UserLayout from "./layout/user/UserLayout.jsx";
 import MonitorAdmins from "./pages/admin/MonitorAdmins.jsx";
+import UserLayout from "./layout/user/UserLayout.jsx";
+import PaidApplicants from "./pages/admin/PaidApplicants.jsx";
 
 function App() {
 
@@ -87,6 +88,7 @@ function App() {
           <Route path="hallNotice" element={<HallNotice />} />
           <Route path="makePayment" element={<MakePayment />} />
           <Route path="seatCancel" element={<SeatCancellation />} />
+          <Route path="payment-success" element={<PaymentSuccess/>} />
           <Route path="applicationStatus" element={<ApplicationStatus />} />
         </Route>
         
@@ -117,6 +119,7 @@ function App() {
           }
            
           <Route path="profile" element={<Profile />} />
+          <Route path="paid-applicants" element={<PaidApplicants />} />
         </Route>
       </Routes>
     </Router>

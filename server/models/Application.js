@@ -32,8 +32,13 @@ const ApplicationSchema = new mongoose.Schema({
     block: String,
     room: String,
     seatNumber: Number
-  }
+  },
+  paid: {
+    type: Boolean,
+    default: false
+  },
+  stripeSessionId: String,
+  stripePaymentIntentId: String
 }, { timestamps: true });
 
 module.exports = mongoose.model('Application', ApplicationSchema);
-

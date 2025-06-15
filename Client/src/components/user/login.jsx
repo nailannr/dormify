@@ -9,12 +9,12 @@ export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data:", form)
-     try {
+    try {
       const res = await API.post('/auth/login', form);
-      const {token, user} = res.data;
+      const { token, user } = res.data;
       localStorage.setItem('token', token);
       localStorage.setItem('role', user.role);
       localStorage.setItem('dorm',user.dorm || '');
@@ -35,7 +35,6 @@ export default function Login() {
     } catch (err) {
       alert(err.response.data.message);
     }
-    
   }
 
 

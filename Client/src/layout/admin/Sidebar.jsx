@@ -9,7 +9,8 @@ import {
   MessageSquare, 
   Users2,
   LayoutGrid,
-  UserCog
+  UserCog,
+  CreditCard
 } from 'lucide-react';
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
@@ -21,6 +22,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     { name: 'ADMISSION APPLICATIONS', path: '/admin/admission-applications', icon: <ClipboardCheck size={20} /> },
     { name: 'CANCELLATION APPLICATIONS', path: '/admin/cancellation-applications', icon: <ClipboardX size={20} /> },
     { name: 'ADMITTED STUDENTS', path: '/admin/admitted-students', icon: <Users size={20} /> },
+    { name: 'PAID APPLICANTS', path: '/admin/paid-applicants', icon: <CreditCard size={20} />},
     { name: 'SEAT ALLOTMENT', path: '/admin/seat-allotment', icon: <LayoutGrid size={20} /> },
     { name: 'UPLOAD NOTICE', path: '/admin/upload-notice', icon: <FileUp size={20} /> },
     { name: 'COMPLAINTS', path: '/admin/complaints', icon: <MessageSquare size={20} /> },

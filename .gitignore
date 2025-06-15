@@ -61,10 +61,6 @@ pids
 *.seed
 *.pid.lock
 
-# dotenv environment variables
-.env
-.env.*.local
-
 # OS-generated files
 .DS_Store
 Thumbs.db
@@ -92,3 +88,4 @@ coverage/
 package-lock.json
 yarn.lock
 
+server/.env

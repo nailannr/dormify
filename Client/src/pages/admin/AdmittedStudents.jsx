@@ -261,4 +261,3 @@ const AdmittedStudents = () => {
 };
 
 export default AdmittedStudents;
-
