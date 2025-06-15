@@ -31,8 +31,6 @@ import MonitorAdmins from "./pages/admin/MonitorAdmins.jsx";
 import UserLayout from "./layout/user/UserLayout.jsx";
 import PaidApplicants from "./pages/admin/PaidApplicants.jsx";
 
-import MonitorAdmins from "./pages/admin/MonitorAdmins.jsx";
-
 function App() {
 
   const [token, setToken] = useState(localStorage.getItem("token"));

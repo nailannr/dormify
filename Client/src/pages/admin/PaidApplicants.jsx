@@ -13,7 +13,12 @@ const PaidApplicants = () => {
     useEffect(() => {
         const fetchPaidApplicants = async () => {
             try {
-                const res = await API.get("/application/paid");
+                const token = localStorage.getItem('token')
+                const res = await API.get("/application/paid",{
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 const paymentsData = res.data.map(app => ({
                     id: app.stripeSessionId || app._id,
                     created: app.createdAt,
@@ -73,10 +78,15 @@ const PaidApplicants = () => {
 
     const handleSearchChange = (e) => setSearchQuery(e.target.value);
 
-    const handleRefresh = () => {
+    const handleRefresh = async () => {
+        const token = localStorage.getItem('token')
         setLoading(true);
         setSearchQuery('');
-        API.get("/application/paid").then(res => {
+        const res = await API.get("/application/paid",{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(res => {
             const paymentsData = res.data.map(app => ({
                 id: app.stripeSessionId || app._id,
                 created: app.createdAt,

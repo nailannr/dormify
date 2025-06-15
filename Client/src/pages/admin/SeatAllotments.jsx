@@ -6,11 +6,11 @@ const SeatAllotment = () => {
   const [selectedBlock, setSelectedBlock] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [blocks, setBlocks] = useState({});
-  const [approvedStudents, setApprovedStudents] = useState([]);
+  const [paidApplicants, setPaidApplicants] = useState([]);
   const [selectedStudentMap, setSelectedStudentMap] = useState({});
 
-  // Fetch paid and unassigned students from admin's dorm
-  const fetchApprovedStudents = async () => {
+  // Fetch paid applicants who are not assigned a seat
+  const fetchPaidApplicants = async () => {
     const token = localStorage.getItem('token');
 
     const [paidRes, seatRes] = await Promise.all([
@@ -22,21 +22,25 @@ const SeatAllotment = () => {
       }),
     ]);
 
-    // Only students with userId and not already assigned a seat
-    const validApplications = paidRes.data.filter(app => app.userId && app.userId._id);
-    const assignedStudentIds = seatRes.data
-      .map(seat => seat.studentId?._id)
-      .filter(id => id); // remove undefined
+    // Find application IDs already assigned to a seat
+    const assignedApplicationIds = seatRes.data
+      .filter(seat => seat.studentApplication)
+      .map(seat =>
+        typeof seat.studentApplication === 'object'
+          ? seat.studentApplication._id?.toString()
+          : seat.studentApplication?.toString()
+      );
 
-    const unassigned = validApplications.filter(app =>
-      !assignedStudentIds.includes(app.userId._id)
+    // Only show paid applicants whose application is not assigned to a seat
+    const unassigned = paidRes.data.filter(app =>
+      app._id && !assignedApplicationIds.includes(app._id.toString())
     );
 
-    setApprovedStudents(unassigned);
+    setPaidApplicants(unassigned);
   };
 
   useEffect(() => {
-    fetchApprovedStudents();
+    fetchPaidApplicants();
   }, []);
 
   // Fetch seat data and group by block/room
@@ -70,10 +74,17 @@ const SeatAllotment = () => {
     fetchSeats();
   }, []);
 
-  const assignSeat = async (seatId, studentId) => {
+  const assignSeat = async (seatId, applicationId) => {
     try {
       const token = localStorage.getItem('token');
-      await API.post('/seat/assign', { seatId, studentId }, {
+      // Find the applicant object by applicationId
+      const applicant = paidApplicants.find(app => app._id === applicationId);
+      if (!applicant) {
+        alert("Applicant not found.");
+        return;
+      }
+      // You may need to get the userId from the application if your backend expects userId
+      await API.post('/seat/assign', { seatId, studentId: applicant.userId }, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -101,6 +112,8 @@ const SeatAllotment = () => {
 
       setBlocks(structured);
       setSelectedStudentMap((prev) => ({ ...prev, [seatId]: '' }));
+      // Refresh paid applicants list
+      await fetchPaidApplicants();
     } catch (err) {
       alert("Failed to assign seat");
       console.error(err);
@@ -137,14 +150,18 @@ const SeatAllotment = () => {
 
       setBlocks(structured);
 
-      await fetchApprovedStudents();
-      
+      await fetchPaidApplicants();
     } catch (err) {
       alert("Failed to remove student from seat");
       console.error(err);
     }
   };
 
+  // Filter applicants by search query
+  const filteredApplicants = paidApplicants.filter(student =>
+    (student.name && student.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (student.regNo && student.regNo.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
     <div className="space-y-6">
@@ -231,7 +248,6 @@ const SeatAllotment = () => {
                           <p className="text-sm font-medium text-gray-800">{seat.studentId.name}</p>
                           <p className="text-xs text-gray-600">{seat.studentId.department}</p>
                           <p className="text-xs text-gray-500">{seat.studentApplication?.regNo || 'N/A'}</p>
-
                           <button
                             onClick={() => unassignSeat(seat._id)}
                             className="mt-2 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
@@ -251,13 +267,10 @@ const SeatAllotment = () => {
                             className="mt-2 w-full border p-1 rounded"
                           >
                             <option value="">Select Student</option>
-                            {approvedStudents.map((student) => (
-                              student.userId && (
-                                <option key={student._id} value={student.userId._id}>
-                                  {student.userId.name} ({student.regNo})
-                                </option>
-                              )
-
+                            {filteredApplicants.map((student) => (
+                              <option key={student._id} value={student._id}>
+                                {student.name} ({student.regNo})
+                              </option>
                             ))}
                           </select>
                           <button

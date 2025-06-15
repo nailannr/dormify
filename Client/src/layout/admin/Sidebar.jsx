@@ -26,7 +26,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     { name: 'SEAT ALLOTMENT', path: '/admin/seat-allotment', icon: <LayoutGrid size={20} /> },
     { name: 'UPLOAD NOTICE', path: '/admin/upload-notice', icon: <FileUp size={20} /> },
     { name: 'COMPLAINTS', path: '/admin/complaints', icon: <MessageSquare size={20} /> },
-    { name: 'MONITOR ADMINS', path: '/admin/monitor-admins', icon: <UserCog size={20} /> },
     { name: 'PROVOST BODY AND STAFFS', path: '/admin/provost-body-and-staffs', icon: <Users2 size={20} /> },
     ...(role === 'superadmin'
       ? [{ name: 'MONITOR ADMINS', path: '/admin/monitor-admins', icon: <UserCog size={20} /> }]
