@@ -15,7 +15,7 @@ export default function PaymentSuccess() {
                 const res = await API.post("/payment/confirm", { session_id: sessionId });
                 if (res.data.success) {
                     setStatus("Thank you for your payment! Your room number and room key information will be available soon!");
-                    setTimeout(() => navigate("/user/application-status"), 2000);
+                    setTimeout(() => navigate("/user/applicationStatus"), 5000);
                 } else {
                     setStatus("Payment not completed. Please contact support.");
                 }
@@ -34,7 +34,7 @@ export default function PaymentSuccess() {
                 <h2 className="text-2xl font-bold text-emerald-700 mb-4">Payment Status</h2>
                 <p className="text-lg text-gray-700 mb-4">{status}</p>
                 <button
-                    onClick={() => navigate("/user/application-status")}
+                    onClick={() => navigate("/user/applicationStatus")}
                     className="text-emerald-700 font-semibold underline mt-4"
                 >
                     Go to Application Status
