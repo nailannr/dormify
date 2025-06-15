@@ -295,3 +295,5 @@ const SeatAllotment = () => {
 };
 
 export default SeatAllotment;
+
+

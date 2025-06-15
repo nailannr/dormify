@@ -35,7 +35,6 @@ export default function Login() {
     } catch (err) {
       alert(err.response.data.message);
     }
-
   }
 
 
