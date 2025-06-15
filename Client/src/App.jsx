@@ -12,6 +12,7 @@ import ComplainBox from "./components/user/ComplainBox.jsx";
 import HallNotice from "./components/user/hallNotice.jsx";
 import MakePayment from "./components/user/MakePayment.jsx";
 import PaymentSuccess from "./components/user/PaymentSuccess.jsx";
+import UserProfile from "./components/user/UserProfile.jsx";
 
 import Dashboard from "./pages/admin/Dashboard";
 import AdmissionApplications from "./pages/admin/AdmissionApplications";
@@ -87,6 +88,7 @@ function App() {
           <Route path="makePayment" element={<MakePayment />} />
           <Route path="payment-success" element={<PaymentSuccess/>} />
           <Route path="applicationStatus" element={<ApplicationStatus />} />
+          <Route path= "user-profile" element={<UserProfile />} />
         </Route>
         
 
