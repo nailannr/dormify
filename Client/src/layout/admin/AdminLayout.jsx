@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { Route, Routes, Outlet } from 'react-router-dom';
+import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const changePass = localStorage.getItem("changePass") === "true";
+  const role = localStorage.getItem("role");
+  const location = useLocation();
+
+  if (role === "admin" && changePass && location.pathname !== "/admin/profile") {
+    return <Navigate to="/admin/profile" />;
+  }
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
