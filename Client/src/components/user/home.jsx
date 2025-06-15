@@ -1,10 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import sustLogo from "../../assets/sustLogo.png";
+import API from '../../api'
 
 export default function Home() {
   const navigate = useNavigate();
   const [selectedHall, setSelectedHall] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const [userName, setUserName] = useState('')
+
+  //to fetch user info
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const res = await API.get('/user/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        setUserName(res.data?.name || '');
+      } catch (err) {
+        console.error("Failed to fetch user info:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleGo = () => {
     if (selectedHall === "dorm1") navigate("/user/BookSeat1");
@@ -22,15 +57,48 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-green-100 to-emerald-100 flex flex-col md:flex-row">
-      {/* ✅ Header Bar */}
+      {/* Header Bar */}
       <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 flex justify-between items-center px-6 py-3">
         <div className="text-lg font-semibold text-emerald-700">Dormify - Student Portal</div>
-        <button
-          onClick={handleLogout}
-          className="text-sm bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition"
-        >
-          Logout
-        </button>
+        {/* User Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setDropdownOpen((open) => !open)}
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-100 rounded-full hover:bg-emerald-200 transition font-semibold text-emerald-700 focus:outline-none"
+            type="button"
+          >
+            <span className="truncate max-w-[120px]">
+              {userName || "Loading..."}
+            </span>
+            <svg className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white border border-emerald-100 rounded-lg shadow-lg z-50">
+              <button
+                className="w-full text-left px-4 py-2 hover:bg-emerald-50 text-emerald-700"
+                onClick={() => {
+                  setDropdownOpen(false);
+                  navigate("/user/user-profile");
+                }}
+                type="button"
+              >
+                Profile
+              </button>
+              <button
+                className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+                onClick={() => {
+                  setDropdownOpen(false);
+                  handleLogout();
+                }}
+                type="button"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Left: Logo, Dormify, Dashboard */}
@@ -61,6 +129,7 @@ export default function Home() {
                   className={`px-6 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95 ${!selectedHall && "opacity-50 cursor-not-allowed"}`}
                   onClick={handleGo}
                   disabled={!selectedHall}
+                  type="button"
                 >
                   Go
                 </button>
@@ -68,18 +137,21 @@ export default function Home() {
               <button
                 className="w-full px-6 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95"
                 onClick={() => navigate("/user/ApplicationStatus")}
+                type="button"
               >
                 Application Status
               </button>
               <button
                 className="w-full px-6 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95"
                 onClick={() => navigate("/user/hallNotice")}
+                type="button"
               >
                 Hall Notice
               </button>
               <button
                 className="w-full px-6 py-3 rounded-full bg-emerald-700 text-white font-semibold shadow-md transition hover:bg-emerald-800 active:scale-95"
                 onClick={() => navigate("/user/complainBox")}
+                type="button"
               >
                 Complain Box
               </button>
